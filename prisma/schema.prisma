@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Room {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  audioChunks AudioChunk[]
+  questions   Question[]
+
+  @@map("rooms")
+}
+
+model AudioChunk {
+  id            String                      @id @default(uuid())
+  roomId        String
+  room          Room                        @relation(fields: [roomId], references: [id])
+  transcription String
+  embeddings    Unsupported("vector(768)")?
+  createdAt     DateTime                    @default(now())
+  updatedAt     DateTime                    @updatedAt
+
+  @@index([roomId])
+  @@map("audio_chunks")
+}
+
+model Question {
+  id        String   @id @default(uuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id])
+  question  String
+  answer    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId])
+  @@map("questions")
+}
