@@ -7,6 +7,8 @@ import { generateEmbbedings, transcribeAudio } from "@/services/gemini"
 
 import { questionSchema, roomSchema } from "../schemas"
 
+const roomIdParamValidator = zValidator("param", z.object({ id: z.string() }))
+
 const roomsController = new Hono()
   .get("/", async (c) => {
     const rooms = await prisma.room.findMany({
@@ -21,20 +23,16 @@ const roomsController = new Hono()
 
     return c.json({ data: rooms })
   })
-  .get(
-    "/:id/questions",
-    zValidator("param", z.object({ id: z.string() })),
-    async (c) => {
-      const { id } = c.req.valid("param")
+  .get("/:id/questions", roomIdParamValidator, async (c) => {
+    const { id } = c.req.valid("param")
 
-      const questions = await prisma.question.findMany({
-        where: { roomId: id },
-        orderBy: { createdAt: "desc" }
-      })
+    const questions = await prisma.question.findMany({
+      where: { roomId: id },
+      orderBy: { createdAt: "desc" }
+    })
 
-      return c.json({ data: questions })
-    }
-  )
+    return c.json({ data: questions })
+  })
   .post("/", zValidator("json", roomSchema), async (c) => {
     const data = c.req.valid("json")
 
@@ -46,8 +44,8 @@ const roomsController = new Hono()
   })
   .post(
     "/:id/questions",
+    roomIdParamValidator,
     zValidator("json", questionSchema),
-    zValidator("param", z.object({ id: z.string() })),
     async (c) => {
       const { id } = c.req.valid("param")
       const data = c.req.valid("json")
@@ -66,7 +64,7 @@ const roomsController = new Hono()
   )
   .post(
     "/:id/audio",
-    zValidator("param", z.object({ id: z.string() })),
+    roomIdParamValidator,
     zValidator(
       "form",
       z.object({
