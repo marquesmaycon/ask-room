@@ -5,6 +5,8 @@ export const roomSchema = z.object({
   description: z.string().max(200).optional()
 })
 
+export type RoomSchema = z.infer<typeof roomSchema>
+
 export const questionSchema = z.object({
   question: z.string().min(1),
   answer: z.string().optional()
