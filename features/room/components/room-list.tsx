@@ -1,5 +1,10 @@
 "use client"
 
+import Link from "next/link"
+
+import { Button } from "@/components/ui/button"
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item"
+
 import { useRooms } from "../hooks/use-rooms"
 
 export const RoomList = () => {
@@ -9,5 +14,27 @@ export const RoomList = () => {
     return <div>Loading...</div>
   }
 
-  return <pre>{JSON.stringify({ data, isLoading }, null, 2)}</pre>
+  return (
+    <div>
+      <ul className="space-y-4">
+        {data?.map((room) => (
+          <li key={room.id}>
+            <Item variant="outline">
+              <ItemContent>
+                <ItemTitle>{room.name}</ItemTitle>
+                <ItemDescription>{room.description}</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Link href={`/room/${room.id}`}>
+                  <Button variant="outline" size="sm">
+                    Enter
+                  </Button>
+                </Link>
+              </ItemActions>
+            </Item>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }

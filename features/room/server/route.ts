@@ -3,7 +3,7 @@ import { Hono } from "hono"
 import z from "zod"
 
 import { prisma } from "@/lib/prisma"
-import { generateEmbbedings, transcribeAudio } from "@/services/gemini"
+import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
 
 import { questionSchema, roomSchema } from "../schemas"
 
@@ -27,7 +27,8 @@ const roomsController = new Hono()
     const { id } = c.req.valid("param")
 
     const room = await prisma.room.findUnique({
-      where: { id }
+      where: { id },
+      include: { questions: true }
     })
 
     return c.json({ room })
@@ -42,19 +43,55 @@ const roomsController = new Hono()
     return c.json({ room })
   })
   .post("/:id/questions", roomIdParamValidator, zValidator("json", questionSchema), async (c) => {
-    const { id } = c.req.valid("param")
-    const data = c.req.valid("json")
+    const { id: roomId } = c.req.valid("param")
+    const { question } = c.req.valid("json")
 
-    const question = await prisma.question.create({
+    // Gera embeddings da pergunta
+    const embeddings = await generateEmbbedings(question)
+    const embeddingsString = `[${embeddings.join(",")}]`
+
+    // Busca os chunks de áudio mais similares usando busca vetorial
+    const chunks = await prisma.$queryRaw<
+      Array<{
+        id: string
+        transcription: string
+        similarity: number
+      }>
+    >`
+      SELECT 
+        id,
+        transcription,
+        1 - (embeddings <=> ${embeddingsString}::vector) as similarity
+      FROM audio_chunks
+      WHERE "roomId" = ${roomId}
+        AND 1 - (embeddings <=> ${embeddingsString}::vector) > 0.7
+      ORDER BY embeddings <=> ${embeddingsString}::vector
+      LIMIT 5
+    `
+
+    const transcriptions = chunks.map((chunk) => chunk.transcription)
+
+    const answer = await generateAnswer(question, transcriptions)
+
+    const newQuestion = await prisma.question.create({
       data: {
-        ...data,
-        room: {
-          connect: { id }
-        }
+        roomId,
+        question,
+        answer
+      },
+      select: {
+        id: true,
+        question: true,
+        answer: true,
+        createdAt: true
       }
     })
 
-    return c.json({ question })
+    if (!newQuestion) {
+      return c.json({ error: "Failed to create question" }, 500)
+    }
+
+    return c.json({ question: newQuestion }, 201)
   })
   .post(
     "/:id/audio",
@@ -82,19 +119,23 @@ const roomsController = new Hono()
         const transcription = await transcribeAudio(audioBase64, mimeType)
         const embeddings = await generateEmbbedings(transcription)
 
-        const result = await prisma.$queryRaw<Array<{ id: string }>>`
-          INSERT INTO audio_chunks ("roomId", transcription, embeddings, "createdAt", "updatedAt")
-          VALUES (${roomId}, ${transcription}, ${JSON.stringify(embeddings)}::vector, NOW(), NOW())
-          RETURNING id
-        `
+        const audioChunk = await prisma.$transaction(async (tx) => {
+          const chunk = await tx.audioChunk.create({
+            data: { roomId, transcription }
+          })
 
-        if (!result || result.length === 0) {
-          return c.json({ error: "Failed to save audio chunk" }, 500)
-        }
+          await tx.$executeRaw`
+            UPDATE audio_chunks 
+            SET embeddings = ${JSON.stringify(embeddings)}::vector
+            WHERE id = ${chunk.id}
+          `
+
+          return chunk
+        })
 
         return c.json(
           {
-            id: result[0].id,
+            id: audioChunk.id,
             transcription,
             embeddings,
             roomId

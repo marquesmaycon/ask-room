@@ -8,6 +8,5 @@ export const roomSchema = z.object({
 export type RoomSchema = z.infer<typeof roomSchema>
 
 export const questionSchema = z.object({
-  question: z.string().min(1),
-  answer: z.string().optional()
+  question: z.string().min(1)
 })
