@@ -10,3 +10,7 @@ export type RoomSchema = z.infer<typeof roomSchema>
 export const questionSchema = z.object({
   question: z.string().min(1)
 })
+
+export const feedRoomSchema = z.object({
+  text: z.string().min(1)
+})

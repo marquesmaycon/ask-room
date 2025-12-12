@@ -1,6 +1,6 @@
 "use client"
 
-import { CircleStop, Play, PlayCircle } from "lucide-react"
+import { CircleStop, PlayCircle } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useRef, useState } from "react"
 
@@ -95,10 +95,8 @@ export function RecordRoomAudio() {
   const Icon = isRecording ? <CircleStop /> : <PlayCircle />
 
   return (
-    <div className="">
-      <Button onClick={toggleRecording} variant={isRecording ? "destructive" : "default"}>
-        {isRecording ? "Parar gravação" : "Gravar Áudio"} {Icon}
-      </Button>
-    </div>
+    <Button size="sm" onClick={toggleRecording} variant={isRecording ? "destructive" : "default"}>
+      {isRecording ? "Parar gravação" : "Gravar Áudio"} {Icon}
+    </Button>
   )
 }

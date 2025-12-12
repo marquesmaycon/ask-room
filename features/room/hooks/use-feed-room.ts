@@ -6,28 +6,28 @@ import { client } from "@/lib/rpc"
 
 import { roomsQueryOptions } from "./use-rooms"
 
-const uploadRoomAudioRequest = client.api.rooms[":id"].audio.$post
+const feedRoomRequest = client.api.rooms[":id"].text.$post
 
-type RequestType = InferRequestType<typeof uploadRoomAudioRequest>
+type RequestType = InferRequestType<typeof feedRoomRequest>
 
-export const useUploadRoomAudio = () => {
+export const useFeedRoom = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ param, form }: RequestType) => {
-      const res = await uploadRoomAudioRequest({ param, form })
+    mutationFn: async ({ param, json }: RequestType) => {
+      const res = await feedRoomRequest({ param, json })
 
       if (!res.ok) {
-        throw new Error("Failed to upload audio")
+        throw new Error("Error feeding room with text")
       }
 
       return await res.json()
     },
     onSuccess: () => {
-      toast.success("Áudio enviado com sucesso.")
+      toast.success("Texto enviado com sucesso.")
       queryClient.invalidateQueries(roomsQueryOptions)
     },
     onError: () => {
-      toast.error("Ocorreu um erro ao enviar o áudio.")
+      toast.error("Ocorreu um erro ao enviar o texto.")
     }
   })
 }

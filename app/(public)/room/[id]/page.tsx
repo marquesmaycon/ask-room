@@ -6,6 +6,7 @@ import { useParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item"
+import { FeedRoomContext } from "@/features/room/components/feed-room-context"
 import { RecordRoomAudio } from "@/features/room/components/record-room-audio"
 import { RoomQuestionForm } from "@/features/room/components/room-question-form"
 import { useRoom } from "@/features/room/hooks/use-room"
@@ -31,7 +32,10 @@ export default function RoomPage() {
             <p>{room?.description}</p>
           </div>
         </div>
-        <RecordRoomAudio />
+        <div className="space-x-2">
+          <FeedRoomContext />
+          <RecordRoomAudio />
+        </div>
       </div>
       <div className="space-y-4">
         <RoomQuestionForm />

@@ -94,6 +94,57 @@ const roomsController = new Hono()
     return c.json({ question: newQuestion }, 201)
   })
   .post(
+    "/:id/text",
+    roomIdParamValidator,
+    zValidator(
+      "json",
+      z.object({
+        text: z.string().min(1, "Text is required")
+      })
+    ),
+    async (c) => {
+      const { id: roomId } = c.req.valid("param")
+
+      try {
+        const { text } = c.req.valid("json")
+
+        const embeddings = await generateEmbbedings(text)
+
+        const audioChunk = await prisma.$transaction(async (tx) => {
+          const chunk = await tx.audioChunk.create({
+            data: { roomId, transcription: text }
+          })
+
+          await tx.$executeRaw`
+            UPDATE audio_chunks 
+            SET embeddings = ${JSON.stringify(embeddings)}::vector
+            WHERE id = ${chunk.id}
+          `
+
+          return chunk
+        })
+
+        return c.json(
+          {
+            id: audioChunk.id,
+            transcription: text,
+            embeddings,
+            roomId
+          },
+          201
+        )
+      } catch (error) {
+        console.error("Text processing error:", error)
+        return c.json(
+          {
+            error: error instanceof Error ? error.message : "Failed to process text"
+          },
+          500
+        )
+      }
+    }
+  )
+  .post(
     "/:id/audio",
     roomIdParamValidator,
     zValidator(
