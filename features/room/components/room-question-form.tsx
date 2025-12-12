@@ -1,5 +1,6 @@
 "use client"
 
+import { BotMessageSquare } from "lucide-react"
 import { useParams } from "next/navigation"
 
 import { FieldGroup } from "@/components/ui/field"
@@ -19,7 +20,10 @@ export const RoomQuestionForm = () => {
     validators: {
       onSubmit: questionSchema
     },
-    onSubmit: async ({ value }) => await mutateAsync({ param: { id }, json: value })
+    onSubmit: async ({ value }) => {
+      await mutateAsync({ param: { id }, json: value })
+      form.reset()
+    }
   })
 
   return (
@@ -28,17 +32,20 @@ export const RoomQuestionForm = () => {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="space-y-4 rounded-lg border p-4"
+      className="space-y-4 rounded-lg border bg-slate-800 p-4 pb-6"
     >
-      <h3>Ask a Question </h3>
-      <FieldGroup>
+      <div className="flex items-center gap-2">
+        <BotMessageSquare />
+        <h3 className="font-sans text-lg font-medium">Faça uma pergunta e a IA responderá</h3>
+      </div>
+      <FieldGroup className="md:flex-row md:items-end">
         <form.AppField name="question">
-          {({ InputField }) => <InputField label="Question" placeholder="Enter your question" />}
+          {({ InputField }) => <InputField label="Pergunta" placeholder="digite sua pergunta" />}
         </form.AppField>
+        <form.AppForm>
+          <form.SubmitButton label="Perguntar" className="ml-auto" />
+        </form.AppForm>
       </FieldGroup>
-      <form.AppForm>
-        <form.SubmitButton label="Enviar" className="flex-1" />
-      </form.AppForm>
     </form>
   )
 }

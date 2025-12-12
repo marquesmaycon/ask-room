@@ -1,5 +1,6 @@
 "use client"
 
+import { LogIn } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -27,7 +28,7 @@ export const RoomList = () => {
               <ItemActions>
                 <Link href={`/room/${room.id}`}>
                   <Button variant="outline" size="sm">
-                    Enter
+                    Entrar <LogIn />
                   </Button>
                 </Link>
               </ItemActions>

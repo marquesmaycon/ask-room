@@ -1,7 +1,10 @@
 "use client"
 
+import { ChevronLeft, MessageCircleQuestionMark } from "lucide-react"
+import Link from "next/link"
 import { useParams } from "next/navigation"
 
+import { Button } from "@/components/ui/button"
 import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item"
 import { RecordRoomAudio } from "@/features/room/components/record-room-audio"
 import { RoomQuestionForm } from "@/features/room/components/room-question-form"
@@ -15,17 +18,27 @@ export default function RoomPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <div>
-          <h1>
-            Room: <b>{room?.name}</b>
-          </h1>
-          <p>{room?.description}</p>
+        <div className="flex items-start gap-2">
+          <Link href="/">
+            <Button size="icon-sm" variant="ghost">
+              <ChevronLeft />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="font-sans text-4xl">
+              <b>{room?.name}</b>
+            </h1>
+            <p>{room?.description}</p>
+          </div>
         </div>
         <RecordRoomAudio />
       </div>
       <div className="space-y-4">
         <RoomQuestionForm />
-        <h2>Perguntas</h2>
+        <div className="flex items-center gap-2">
+          <MessageCircleQuestionMark />
+          <h2 className="font-sans text-2xl font-semibold">Perguntas respondidas</h2>
+        </div>
         <ul className="space-y-6">
           {room?.questions.map((question) => (
             <li key={question.id}>

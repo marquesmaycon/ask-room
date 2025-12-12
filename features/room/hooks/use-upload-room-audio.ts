@@ -23,11 +23,11 @@ export const useUploadRoomAudio = () => {
       return await res.json()
     },
     onSuccess: () => {
-      toast.success("Room created successfully")
+      toast.success("Áudio enviado com sucesso.")
       queryClient.invalidateQueries(roomsQueryOptions)
     },
     onError: () => {
-      toast.error("An error occurred while creating the room.")
+      toast.error("Ocorreu um erro ao enviar o áudio.")
     }
   })
 }

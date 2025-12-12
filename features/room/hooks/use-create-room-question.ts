@@ -15,15 +15,20 @@ export const useCreateRoomQuestion = () => {
   return useMutation({
     mutationFn: async ({ param, json }: RequestType) => {
       const res = await createRoomQuestionRequest({ param, json })
+
+      if (!res.ok) {
+        throw new Error("Failed to create question")
+      }
+
       const { question } = await res.json()
       return question
     },
     onSuccess: () => {
-      toast.success("Question created successfully")
+      toast.success("Pergunta criada com sucesso.")
       queryClient.invalidateQueries(roomsQueryOptions)
     },
     onError: () => {
-      toast.error("An error occurred while creating the question.")
+      toast.error("Ocorreu um erro ao criar a pergunta.")
     }
   })
 }
