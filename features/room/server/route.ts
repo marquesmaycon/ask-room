@@ -21,17 +21,16 @@ const roomsController = new Hono()
       orderBy: { createdAt: "desc" }
     })
 
-    return c.json({ data: rooms })
+    return c.json({ rooms })
   })
-  .get("/:id/questions", roomIdParamValidator, async (c) => {
+  .get("/:id", roomIdParamValidator, async (c) => {
     const { id } = c.req.valid("param")
 
-    const questions = await prisma.question.findMany({
-      where: { roomId: id },
-      orderBy: { createdAt: "desc" }
+    const room = await prisma.room.findUnique({
+      where: { id }
     })
 
-    return c.json({ data: questions })
+    return c.json({ room })
   })
   .post("/", zValidator("json", roomSchema), async (c) => {
     const data = c.req.valid("json")
@@ -40,28 +39,23 @@ const roomsController = new Hono()
       data
     })
 
-    return c.json({ data: room })
+    return c.json({ room })
   })
-  .post(
-    "/:id/questions",
-    roomIdParamValidator,
-    zValidator("json", questionSchema),
-    async (c) => {
-      const { id } = c.req.valid("param")
-      const data = c.req.valid("json")
+  .post("/:id/questions", roomIdParamValidator, zValidator("json", questionSchema), async (c) => {
+    const { id } = c.req.valid("param")
+    const data = c.req.valid("json")
 
-      const question = await prisma.question.create({
-        data: {
-          ...data,
-          room: {
-            connect: { id }
-          }
+    const question = await prisma.question.create({
+      data: {
+        ...data,
+        room: {
+          connect: { id }
         }
-      })
+      }
+    })
 
-      return c.json({ data: question })
-    }
-  )
+    return c.json({ question })
+  })
   .post(
     "/:id/audio",
     roomIdParamValidator,
@@ -100,12 +94,10 @@ const roomsController = new Hono()
 
         return c.json(
           {
-            data: {
-              id: result[0].id,
-              transcription,
-              embeddings,
-              roomId
-            }
+            id: result[0].id,
+            transcription,
+            embeddings,
+            roomId
           },
           201
         )
@@ -113,8 +105,7 @@ const roomsController = new Hono()
         console.error("Audio processing error:", error)
         return c.json(
           {
-            error:
-              error instanceof Error ? error.message : "Failed to process audio"
+            error: error instanceof Error ? error.message : "Failed to process audio"
           },
           500
         )
