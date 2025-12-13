@@ -12,7 +12,7 @@ export default function Home() {
           <BrainCircuit className="mr-2 inline size-10" />
           Ask Room
         </h1>
-        <Link href="/room/create" className="text-blue-500 underline">
+        <Link href="/dashboard/create-room" className="text-blue-500 underline">
           <Button>
             Crie sua sala
             <Plus />
