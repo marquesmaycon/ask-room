@@ -46,6 +46,7 @@ const roomsController = new Hono()
         ...data,
         user: {
           connect: { id: user?.id }
+          connect: { id: user?.id }
         }
       }
     })
