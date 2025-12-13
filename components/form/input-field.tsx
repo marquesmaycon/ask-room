@@ -1,6 +1,7 @@
 import type { ComponentProps } from "react"
 
 import { useFieldContext } from "@/hooks/form-context"
+import { cn } from "@/lib/utils"
 
 import { Field, FieldError, FieldLabel } from "../ui/field"
 import { Input } from "../ui/input"
@@ -24,6 +25,7 @@ export default function InputField({ label, mask, ...props }: InputFieldProps) {
         onBlur={field.handleBlur}
         onChange={({ target: { value } }) => field.handleChange(mask ? mask(value) : value)}
         aria-invalid={isInvalid}
+        className={cn("bg-background")}
         {...props}
       />
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
