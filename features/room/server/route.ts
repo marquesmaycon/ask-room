@@ -2,6 +2,7 @@ import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import z from "zod"
 
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { sessionMiddleware } from "@/lib/session-middleware"
 import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
@@ -44,7 +45,7 @@ const roomsController = new Hono()
       data: {
         ...data,
         user: {
-          connect: { id: user.id }
+          connect: { id: user?.id }
         }
       }
     })
@@ -54,6 +55,8 @@ const roomsController = new Hono()
   .post("/:id/questions", roomIdParamValidator, zValidator("json", questionSchema), async (c) => {
     const { id: roomId } = c.req.valid("param")
     const { question } = c.req.valid("json")
+
+    const session = await auth.api.getSession()
 
     const embeddings = await generateEmbbedings(question)
     const embeddingsString = `[${embeddings.join(",")}]`
@@ -65,16 +68,16 @@ const roomsController = new Hono()
         similarity: number
       }>
     >`
-      SELECT 
-        id,
-        transcription,
-        1 - (embeddings <=> ${embeddingsString}::vector) as similarity
-      FROM audio_chunks
-      WHERE "roomId" = ${roomId}
-        AND 1 - (embeddings <=> ${embeddingsString}::vector) > 0.7
-      ORDER BY embeddings <=> ${embeddingsString}::vector
-      LIMIT 5
-    `
+        SELECT 
+          id,
+          transcription,
+          1 - (embeddings <=> ${embeddingsString}::vector) as similarity
+        FROM audio_chunks
+        WHERE "roomId" = ${roomId}
+          AND 1 - (embeddings <=> ${embeddingsString}::vector) > 0.7
+        ORDER BY embeddings <=> ${embeddingsString}::vector
+        LIMIT 5
+      `
 
     const transcriptions = chunks.map((chunk) => chunk.transcription)
 
@@ -84,7 +87,8 @@ const roomsController = new Hono()
       data: {
         roomId,
         question,
-        answer
+        answer,
+        userId: session?.user?.id || null
       },
       select: {
         id: true,
