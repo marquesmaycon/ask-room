@@ -46,6 +46,7 @@ const roomsController = new Hono()
         ...data,
         user: {
           connect: { id: user?.id }
+          connect: { id: user?.id }
         }
       }
     })
@@ -58,8 +59,8 @@ const roomsController = new Hono()
 
     const session = await auth.api.getSession()
 
-    const embeddings = await generateEmbbedings(question)
-    const embeddingsString = `[${embeddings.join(",")}]`
+      const embeddings = await generateEmbbedings(question)
+      const embeddingsString = `[${embeddings.join(",")}]`
 
     const chunks = await prisma.$queryRaw<
       Array<{
@@ -79,9 +80,9 @@ const roomsController = new Hono()
         LIMIT 5
       `
 
-    const transcriptions = chunks.map((chunk) => chunk.transcription)
+      const transcriptions = chunks.map((chunk) => chunk.transcription)
 
-    const answer = await generateAnswer(question, transcriptions)
+      const answer = await generateAnswer(question, transcriptions)
 
     const newQuestion = await prisma.question.create({
       data: {
@@ -98,12 +99,13 @@ const roomsController = new Hono()
       }
     })
 
-    if (!newQuestion) {
-      return c.json({ error: "Failed to create question" }, 500)
-    }
+      if (!newQuestion) {
+        return c.json({ error: "Failed to create question" }, 500)
+      }
 
-    return c.json({ question: newQuestion }, 201)
-  })
+      return c.json({ question: newQuestion }, 201)
+    }
+  )
   .post(
     "/:id/text",
     roomIdParamValidator,
