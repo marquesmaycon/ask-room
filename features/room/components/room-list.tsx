@@ -20,7 +20,7 @@ export const RoomList = () => {
       <ul className="space-y-4">
         {data?.map((room) => (
           <li key={room.id}>
-            <Item variant="outline">
+            <Item variant="outline" className="bg-background">
               <ItemContent>
                 <ItemTitle>{room.name}</ItemTitle>
                 <ItemDescription>{room.description}</ItemDescription>

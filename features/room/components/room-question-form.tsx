@@ -32,7 +32,7 @@ export const RoomQuestionForm = () => {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="space-y-4 rounded-lg border bg-slate-800 p-4 pb-6"
+      className="space-y-4 rounded-lg border bg-indigo-200 p-4 pb-6 dark:bg-slate-800"
     >
       <div className="flex items-center gap-2">
         <BotMessageSquare />

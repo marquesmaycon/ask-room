@@ -1,7 +1,5 @@
 "use client"
 
-import Link from "next/link"
-
 import { FieldGroup } from "@/components/ui/field"
 import { useAppForm } from "@/hooks/form"
 
@@ -27,6 +25,7 @@ export const SignInForm = () => {
         e.preventDefault()
         form.handleSubmit()
       }}
+      className="bg-background rounded-xl border px-4 pt-6 pb-8 shadow-md"
     >
       <FieldGroup>
         <form.AppField name="email">
@@ -41,7 +40,6 @@ export const SignInForm = () => {
           <form.SubmitButton label="Entrar" />
         </form.AppForm>
       </FieldGroup>
-      <Link href="/sign-up">Não tem uma conta? Cadastre-se</Link>
     </form>
   )
 }
