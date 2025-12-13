@@ -1,6 +1,8 @@
+import { BrainCircuit } from "lucide-react"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
+import { ThemeSwitcher } from "@/components/theme-switcher"
 import { auth } from "@/lib/auth"
 
 export default async function AuthLayout({
@@ -15,8 +17,25 @@ export default async function AuthLayout({
   }
 
   return (
-    <div className="bg-background mx-auto min-h-screen max-w-md px-4 py-10">
-      <main>{children}</main>
+    <div className="flex min-h-screen items-center justify-around bg-slate-100 px-4 py-10 dark:bg-slate-900">
+      <div className="absolute top-12 right-12">
+        <ThemeSwitcher />
+      </div>
+
+      <div className="fixed top-12">
+        <h1 className="font-sans text-3xl font-bold">
+          <BrainCircuit className="mr-2 inline size-10" />
+          Ask Room
+        </h1>
+      </div>
+
+      <main className="w-full max-w-md">{children}</main>
+
+      <footer className="fixed bottom-12">
+        <p className="text-muted-foreground text-center text-sm">
+          &copy; {new Date().getFullYear()} Ask Room. Todos os direitos reservados.
+        </p>
+      </footer>
     </div>
   )
 }
