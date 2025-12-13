@@ -29,6 +29,7 @@ export type QuestionMinAggregateOutputType = {
   roomId: string | null
   question: string | null
   answer: string | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +39,7 @@ export type QuestionMaxAggregateOutputType = {
   roomId: string | null
   question: string | null
   answer: string | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +49,7 @@ export type QuestionCountAggregateOutputType = {
   roomId: number
   question: number
   answer: number
+  userId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -58,6 +61,7 @@ export type QuestionMinAggregateInputType = {
   roomId?: true
   question?: true
   answer?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +71,7 @@ export type QuestionMaxAggregateInputType = {
   roomId?: true
   question?: true
   answer?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +81,7 @@ export type QuestionCountAggregateInputType = {
   roomId?: true
   question?: true
   answer?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type QuestionGroupByOutputType = {
   roomId: string
   question: string
   answer: string | null
+  userId: string | null
   createdAt: Date
   updatedAt: Date
   _count: QuestionCountAggregateOutputType | null
@@ -188,9 +195,11 @@ export type QuestionWhereInput = {
   roomId?: Prisma.StringFilter<"Question"> | string
   question?: Prisma.StringFilter<"Question"> | string
   answer?: Prisma.StringNullableFilter<"Question"> | string | null
+  userId?: Prisma.StringNullableFilter<"Question"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Question"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Question"> | Date | string
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type QuestionOrderByWithRelationInput = {
@@ -198,9 +207,11 @@ export type QuestionOrderByWithRelationInput = {
   roomId?: Prisma.SortOrder
   question?: Prisma.SortOrder
   answer?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   room?: Prisma.RoomOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type QuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -211,9 +222,11 @@ export type QuestionWhereUniqueInput = Prisma.AtLeast<{
   roomId?: Prisma.StringFilter<"Question"> | string
   question?: Prisma.StringFilter<"Question"> | string
   answer?: Prisma.StringNullableFilter<"Question"> | string | null
+  userId?: Prisma.StringNullableFilter<"Question"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Question"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Question"> | Date | string
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type QuestionOrderByWithAggregationInput = {
@@ -221,6 +234,7 @@ export type QuestionOrderByWithAggregationInput = {
   roomId?: Prisma.SortOrder
   question?: Prisma.SortOrder
   answer?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.QuestionCountOrderByAggregateInput
@@ -236,6 +250,7 @@ export type QuestionScalarWhereWithAggregatesInput = {
   roomId?: Prisma.StringWithAggregatesFilter<"Question"> | string
   question?: Prisma.StringWithAggregatesFilter<"Question"> | string
   answer?: Prisma.StringNullableWithAggregatesFilter<"Question"> | string | null
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Question"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Question"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Question"> | Date | string
 }
@@ -247,6 +262,7 @@ export type QuestionCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   room: Prisma.RoomCreateNestedOneWithoutQuestionsInput
+  user?: Prisma.UserCreateNestedOneWithoutQuestionsInput
 }
 
 export type QuestionUncheckedCreateInput = {
@@ -254,6 +270,7 @@ export type QuestionUncheckedCreateInput = {
   roomId: string
   question: string
   answer?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -265,6 +282,7 @@ export type QuestionUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   room?: Prisma.RoomUpdateOneRequiredWithoutQuestionsNestedInput
+  user?: Prisma.UserUpdateOneWithoutQuestionsNestedInput
 }
 
 export type QuestionUncheckedUpdateInput = {
@@ -272,6 +290,7 @@ export type QuestionUncheckedUpdateInput = {
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   question?: Prisma.StringFieldUpdateOperationsInput | string
   answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -281,6 +300,7 @@ export type QuestionCreateManyInput = {
   roomId: string
   question: string
   answer?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -298,6 +318,7 @@ export type QuestionUncheckedUpdateManyInput = {
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   question?: Prisma.StringFieldUpdateOperationsInput | string
   answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +338,7 @@ export type QuestionCountOrderByAggregateInput = {
   roomId?: Prisma.SortOrder
   question?: Prisma.SortOrder
   answer?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -326,6 +348,7 @@ export type QuestionMaxOrderByAggregateInput = {
   roomId?: Prisma.SortOrder
   question?: Prisma.SortOrder
   answer?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -335,6 +358,7 @@ export type QuestionMinOrderByAggregateInput = {
   roomId?: Prisma.SortOrder
   question?: Prisma.SortOrder
   answer?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -381,18 +405,62 @@ export type QuestionUncheckedUpdateManyWithoutRoomNestedInput = {
   deleteMany?: Prisma.QuestionScalarWhereInput | Prisma.QuestionScalarWhereInput[]
 }
 
+export type QuestionCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutUserInput, Prisma.QuestionUncheckedCreateWithoutUserInput> | Prisma.QuestionCreateWithoutUserInput[] | Prisma.QuestionUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutUserInput | Prisma.QuestionCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.QuestionCreateManyUserInputEnvelope
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+}
+
+export type QuestionUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutUserInput, Prisma.QuestionUncheckedCreateWithoutUserInput> | Prisma.QuestionCreateWithoutUserInput[] | Prisma.QuestionUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutUserInput | Prisma.QuestionCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.QuestionCreateManyUserInputEnvelope
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+}
+
+export type QuestionUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutUserInput, Prisma.QuestionUncheckedCreateWithoutUserInput> | Prisma.QuestionCreateWithoutUserInput[] | Prisma.QuestionUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutUserInput | Prisma.QuestionCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.QuestionUpsertWithWhereUniqueWithoutUserInput | Prisma.QuestionUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.QuestionCreateManyUserInputEnvelope
+  set?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  disconnect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  delete?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  update?: Prisma.QuestionUpdateWithWhereUniqueWithoutUserInput | Prisma.QuestionUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.QuestionUpdateManyWithWhereWithoutUserInput | Prisma.QuestionUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.QuestionScalarWhereInput | Prisma.QuestionScalarWhereInput[]
+}
+
+export type QuestionUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutUserInput, Prisma.QuestionUncheckedCreateWithoutUserInput> | Prisma.QuestionCreateWithoutUserInput[] | Prisma.QuestionUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutUserInput | Prisma.QuestionCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.QuestionUpsertWithWhereUniqueWithoutUserInput | Prisma.QuestionUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.QuestionCreateManyUserInputEnvelope
+  set?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  disconnect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  delete?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  update?: Prisma.QuestionUpdateWithWhereUniqueWithoutUserInput | Prisma.QuestionUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.QuestionUpdateManyWithWhereWithoutUserInput | Prisma.QuestionUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.QuestionScalarWhereInput | Prisma.QuestionScalarWhereInput[]
+}
+
 export type QuestionCreateWithoutRoomInput = {
   id?: string
   question: string
   answer?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutQuestionsInput
 }
 
 export type QuestionUncheckedCreateWithoutRoomInput = {
   id?: string
   question: string
   answer?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -431,14 +499,60 @@ export type QuestionScalarWhereInput = {
   roomId?: Prisma.StringFilter<"Question"> | string
   question?: Prisma.StringFilter<"Question"> | string
   answer?: Prisma.StringNullableFilter<"Question"> | string | null
+  userId?: Prisma.StringNullableFilter<"Question"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Question"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Question"> | Date | string
+}
+
+export type QuestionCreateWithoutUserInput = {
+  id?: string
+  question: string
+  answer?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  room: Prisma.RoomCreateNestedOneWithoutQuestionsInput
+}
+
+export type QuestionUncheckedCreateWithoutUserInput = {
+  id?: string
+  roomId: string
+  question: string
+  answer?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type QuestionCreateOrConnectWithoutUserInput = {
+  where: Prisma.QuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.QuestionCreateWithoutUserInput, Prisma.QuestionUncheckedCreateWithoutUserInput>
+}
+
+export type QuestionCreateManyUserInputEnvelope = {
+  data: Prisma.QuestionCreateManyUserInput | Prisma.QuestionCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type QuestionUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.QuestionWhereUniqueInput
+  update: Prisma.XOR<Prisma.QuestionUpdateWithoutUserInput, Prisma.QuestionUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.QuestionCreateWithoutUserInput, Prisma.QuestionUncheckedCreateWithoutUserInput>
+}
+
+export type QuestionUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.QuestionWhereUniqueInput
+  data: Prisma.XOR<Prisma.QuestionUpdateWithoutUserInput, Prisma.QuestionUncheckedUpdateWithoutUserInput>
+}
+
+export type QuestionUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.QuestionScalarWhereInput
+  data: Prisma.XOR<Prisma.QuestionUpdateManyMutationInput, Prisma.QuestionUncheckedUpdateManyWithoutUserInput>
 }
 
 export type QuestionCreateManyRoomInput = {
   id?: string
   question: string
   answer?: string | null
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -449,18 +563,57 @@ export type QuestionUpdateWithoutRoomInput = {
   answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutQuestionsNestedInput
 }
 
 export type QuestionUncheckedUpdateWithoutRoomInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   question?: Prisma.StringFieldUpdateOperationsInput | string
   answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type QuestionUncheckedUpdateManyWithoutRoomInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type QuestionCreateManyUserInput = {
+  id?: string
+  roomId: string
+  question: string
+  answer?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type QuestionUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  room?: Prisma.RoomUpdateOneRequiredWithoutQuestionsNestedInput
+}
+
+export type QuestionUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  roomId?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type QuestionUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  roomId?: Prisma.StringFieldUpdateOperationsInput | string
   question?: Prisma.StringFieldUpdateOperationsInput | string
   answer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -474,9 +627,11 @@ export type QuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   roomId?: boolean
   question?: boolean
   answer?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Question$userArgs<ExtArgs>
 }, ExtArgs["result"]["question"]>
 
 export type QuestionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -484,9 +639,11 @@ export type QuestionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   roomId?: boolean
   question?: boolean
   answer?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Question$userArgs<ExtArgs>
 }, ExtArgs["result"]["question"]>
 
 export type QuestionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -494,9 +651,11 @@ export type QuestionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   roomId?: boolean
   question?: boolean
   answer?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Question$userArgs<ExtArgs>
 }, ExtArgs["result"]["question"]>
 
 export type QuestionSelectScalar = {
@@ -504,31 +663,37 @@ export type QuestionSelectScalar = {
   roomId?: boolean
   question?: boolean
   answer?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type QuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "question" | "answer" | "createdAt" | "updatedAt", ExtArgs["result"]["question"]>
+export type QuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "question" | "answer" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["question"]>
 export type QuestionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Question$userArgs<ExtArgs>
 }
 export type QuestionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Question$userArgs<ExtArgs>
 }
 export type QuestionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Question$userArgs<ExtArgs>
 }
 
 export type $QuestionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Question"
   objects: {
     room: Prisma.$RoomPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     roomId: string
     question: string
     answer: string | null
+    userId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["question"]>
@@ -926,6 +1091,7 @@ readonly fields: QuestionFieldRefs;
 export interface Prisma__QuestionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   room<T extends Prisma.RoomDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoomDefaultArgs<ExtArgs>>): Prisma.Prisma__RoomClient<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.Question$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Question$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -959,6 +1125,7 @@ export interface QuestionFieldRefs {
   readonly roomId: Prisma.FieldRef<"Question", 'String'>
   readonly question: Prisma.FieldRef<"Question", 'String'>
   readonly answer: Prisma.FieldRef<"Question", 'String'>
+  readonly userId: Prisma.FieldRef<"Question", 'String'>
   readonly createdAt: Prisma.FieldRef<"Question", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Question", 'DateTime'>
 }
@@ -1354,6 +1521,25 @@ export type QuestionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Questions to delete.
    */
   limit?: number
+}
+
+/**
+ * Question.user
+ */
+export type Question$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

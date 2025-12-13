@@ -5,7 +5,7 @@ import { auth } from "./auth"
 
 type SessionMiddlewareContext = {
   Variables: {
-    user: User
+    user?: User
   }
 }
 

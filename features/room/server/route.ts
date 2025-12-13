@@ -44,62 +44,70 @@ const roomsController = new Hono()
       data: {
         ...data,
         user: {
-          connect: { id: user.id }
+          connect: { id: user?.id }
         }
       }
     })
 
     return c.json({ room })
   })
-  .post("/:id/questions", roomIdParamValidator, zValidator("json", questionSchema), async (c) => {
-    const { id: roomId } = c.req.valid("param")
-    const { question } = c.req.valid("json")
+  .post(
+    "/:id/questions",
+    sessionMiddleware,
+    roomIdParamValidator,
+    zValidator("json", questionSchema),
+    async (c) => {
+      const { id: roomId } = c.req.valid("param")
+      const { question } = c.req.valid("json")
+      const user = c.get("user")
 
-    const embeddings = await generateEmbbedings(question)
-    const embeddingsString = `[${embeddings.join(",")}]`
+      const embeddings = await generateEmbbedings(question)
+      const embeddingsString = `[${embeddings.join(",")}]`
 
-    const chunks = await prisma.$queryRaw<
-      Array<{
-        id: string
-        transcription: string
-        similarity: number
-      }>
-    >`
-      SELECT 
-        id,
-        transcription,
-        1 - (embeddings <=> ${embeddingsString}::vector) as similarity
-      FROM audio_chunks
-      WHERE "roomId" = ${roomId}
-        AND 1 - (embeddings <=> ${embeddingsString}::vector) > 0.7
-      ORDER BY embeddings <=> ${embeddingsString}::vector
-      LIMIT 5
-    `
+      const chunks = await prisma.$queryRaw<
+        Array<{
+          id: string
+          transcription: string
+          similarity: number
+        }>
+      >`
+        SELECT 
+          id,
+          transcription,
+          1 - (embeddings <=> ${embeddingsString}::vector) as similarity
+        FROM audio_chunks
+        WHERE "roomId" = ${roomId}
+          AND 1 - (embeddings <=> ${embeddingsString}::vector) > 0.7
+        ORDER BY embeddings <=> ${embeddingsString}::vector
+        LIMIT 5
+      `
 
-    const transcriptions = chunks.map((chunk) => chunk.transcription)
+      const transcriptions = chunks.map((chunk) => chunk.transcription)
 
-    const answer = await generateAnswer(question, transcriptions)
+      const answer = await generateAnswer(question, transcriptions)
 
-    const newQuestion = await prisma.question.create({
-      data: {
-        roomId,
-        question,
-        answer
-      },
-      select: {
-        id: true,
-        question: true,
-        answer: true,
-        createdAt: true
+      const newQuestion = await prisma.question.create({
+        data: {
+          roomId,
+          question,
+          answer,
+          userId: user?.id || null
+        },
+        select: {
+          id: true,
+          question: true,
+          answer: true,
+          createdAt: true
+        }
+      })
+
+      if (!newQuestion) {
+        return c.json({ error: "Failed to create question" }, 500)
       }
-    })
 
-    if (!newQuestion) {
-      return c.json({ error: "Failed to create question" }, 500)
+      return c.json({ question: newQuestion }, 201)
     }
-
-    return c.json({ question: newQuestion }, 201)
-  })
+  )
   .post(
     "/:id/text",
     roomIdParamValidator,
