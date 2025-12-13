@@ -15,7 +15,7 @@ const isRecordingSupported =
 
 export function RecordRoomAudio() {
   const { id: roomId } = useParams<{ id: string }>()
-  console.log({ roomIdClient: roomId })
+
   const [isRecording, setIsRecording] = useState(false)
   const recorder = useRef<MediaRecorder | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)

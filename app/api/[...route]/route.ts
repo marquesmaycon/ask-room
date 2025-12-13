@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth"
 
 const app = new Hono().basePath("/api")
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw))
+app.on(["POST", "GET"], "/auth/*", (c) => auth.handler(c.req.raw))
 
 const routes = app.route("/rooms", roomsController)
 
