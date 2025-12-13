@@ -45,12 +45,32 @@ export { Prisma }
  */
 export type Room = Prisma.RoomModel
 /**
- * Model AudioChunk
+ * Model RoomChunk
  * 
  */
-export type AudioChunk = Prisma.AudioChunkModel
+export type RoomChunk = Prisma.RoomChunkModel
 /**
  * Model Question
  * 
  */
 export type Question = Prisma.QuestionModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Verification
+ * 
+ */
+export type Verification = Prisma.VerificationModel

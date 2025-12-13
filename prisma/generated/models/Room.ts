@@ -182,7 +182,7 @@ export type RoomWhereInput = {
   description?: Prisma.StringNullableFilter<"Room"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Room"> | Date | string
-  audioChunks?: Prisma.AudioChunkListRelationFilter
+  roomChunks?: Prisma.RoomChunkListRelationFilter
   questions?: Prisma.QuestionListRelationFilter
 }
 
@@ -192,7 +192,7 @@ export type RoomOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  audioChunks?: Prisma.AudioChunkOrderByRelationAggregateInput
+  roomChunks?: Prisma.RoomChunkOrderByRelationAggregateInput
   questions?: Prisma.QuestionOrderByRelationAggregateInput
 }
 
@@ -205,7 +205,7 @@ export type RoomWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Room"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Room"> | Date | string
-  audioChunks?: Prisma.AudioChunkListRelationFilter
+  roomChunks?: Prisma.RoomChunkListRelationFilter
   questions?: Prisma.QuestionListRelationFilter
 }, "id">
 
@@ -237,7 +237,7 @@ export type RoomCreateInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  audioChunks?: Prisma.AudioChunkCreateNestedManyWithoutRoomInput
+  roomChunks?: Prisma.RoomChunkCreateNestedManyWithoutRoomInput
   questions?: Prisma.QuestionCreateNestedManyWithoutRoomInput
 }
 
@@ -247,7 +247,7 @@ export type RoomUncheckedCreateInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  audioChunks?: Prisma.AudioChunkUncheckedCreateNestedManyWithoutRoomInput
+  roomChunks?: Prisma.RoomChunkUncheckedCreateNestedManyWithoutRoomInput
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutRoomInput
 }
 
@@ -257,7 +257,7 @@ export type RoomUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  audioChunks?: Prisma.AudioChunkUpdateManyWithoutRoomNestedInput
+  roomChunks?: Prisma.RoomChunkUpdateManyWithoutRoomNestedInput
   questions?: Prisma.QuestionUpdateManyWithoutRoomNestedInput
 }
 
@@ -267,7 +267,7 @@ export type RoomUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  audioChunks?: Prisma.AudioChunkUncheckedUpdateManyWithoutRoomNestedInput
+  roomChunks?: Prisma.RoomChunkUncheckedUpdateManyWithoutRoomNestedInput
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutRoomNestedInput
 }
 
@@ -336,18 +336,18 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type RoomCreateNestedOneWithoutAudioChunksInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutAudioChunksInput, Prisma.RoomUncheckedCreateWithoutAudioChunksInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutAudioChunksInput
+export type RoomCreateNestedOneWithoutRoomChunksInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutRoomChunksInput, Prisma.RoomUncheckedCreateWithoutRoomChunksInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutRoomChunksInput
   connect?: Prisma.RoomWhereUniqueInput
 }
 
-export type RoomUpdateOneRequiredWithoutAudioChunksNestedInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutAudioChunksInput, Prisma.RoomUncheckedCreateWithoutAudioChunksInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutAudioChunksInput
-  upsert?: Prisma.RoomUpsertWithoutAudioChunksInput
+export type RoomUpdateOneRequiredWithoutRoomChunksNestedInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutRoomChunksInput, Prisma.RoomUncheckedCreateWithoutRoomChunksInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutRoomChunksInput
+  upsert?: Prisma.RoomUpsertWithoutRoomChunksInput
   connect?: Prisma.RoomWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutAudioChunksInput, Prisma.RoomUpdateWithoutAudioChunksInput>, Prisma.RoomUncheckedUpdateWithoutAudioChunksInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutRoomChunksInput, Prisma.RoomUpdateWithoutRoomChunksInput>, Prisma.RoomUncheckedUpdateWithoutRoomChunksInput>
 }
 
 export type RoomCreateNestedOneWithoutQuestionsInput = {
@@ -364,7 +364,7 @@ export type RoomUpdateOneRequiredWithoutQuestionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutQuestionsInput, Prisma.RoomUpdateWithoutQuestionsInput>, Prisma.RoomUncheckedUpdateWithoutQuestionsInput>
 }
 
-export type RoomCreateWithoutAudioChunksInput = {
+export type RoomCreateWithoutRoomChunksInput = {
   id?: string
   name: string
   description?: string | null
@@ -373,7 +373,7 @@ export type RoomCreateWithoutAudioChunksInput = {
   questions?: Prisma.QuestionCreateNestedManyWithoutRoomInput
 }
 
-export type RoomUncheckedCreateWithoutAudioChunksInput = {
+export type RoomUncheckedCreateWithoutRoomChunksInput = {
   id?: string
   name: string
   description?: string | null
@@ -382,23 +382,23 @@ export type RoomUncheckedCreateWithoutAudioChunksInput = {
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutRoomInput
 }
 
-export type RoomCreateOrConnectWithoutAudioChunksInput = {
+export type RoomCreateOrConnectWithoutRoomChunksInput = {
   where: Prisma.RoomWhereUniqueInput
-  create: Prisma.XOR<Prisma.RoomCreateWithoutAudioChunksInput, Prisma.RoomUncheckedCreateWithoutAudioChunksInput>
+  create: Prisma.XOR<Prisma.RoomCreateWithoutRoomChunksInput, Prisma.RoomUncheckedCreateWithoutRoomChunksInput>
 }
 
-export type RoomUpsertWithoutAudioChunksInput = {
-  update: Prisma.XOR<Prisma.RoomUpdateWithoutAudioChunksInput, Prisma.RoomUncheckedUpdateWithoutAudioChunksInput>
-  create: Prisma.XOR<Prisma.RoomCreateWithoutAudioChunksInput, Prisma.RoomUncheckedCreateWithoutAudioChunksInput>
+export type RoomUpsertWithoutRoomChunksInput = {
+  update: Prisma.XOR<Prisma.RoomUpdateWithoutRoomChunksInput, Prisma.RoomUncheckedUpdateWithoutRoomChunksInput>
+  create: Prisma.XOR<Prisma.RoomCreateWithoutRoomChunksInput, Prisma.RoomUncheckedCreateWithoutRoomChunksInput>
   where?: Prisma.RoomWhereInput
 }
 
-export type RoomUpdateToOneWithWhereWithoutAudioChunksInput = {
+export type RoomUpdateToOneWithWhereWithoutRoomChunksInput = {
   where?: Prisma.RoomWhereInput
-  data: Prisma.XOR<Prisma.RoomUpdateWithoutAudioChunksInput, Prisma.RoomUncheckedUpdateWithoutAudioChunksInput>
+  data: Prisma.XOR<Prisma.RoomUpdateWithoutRoomChunksInput, Prisma.RoomUncheckedUpdateWithoutRoomChunksInput>
 }
 
-export type RoomUpdateWithoutAudioChunksInput = {
+export type RoomUpdateWithoutRoomChunksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -407,7 +407,7 @@ export type RoomUpdateWithoutAudioChunksInput = {
   questions?: Prisma.QuestionUpdateManyWithoutRoomNestedInput
 }
 
-export type RoomUncheckedUpdateWithoutAudioChunksInput = {
+export type RoomUncheckedUpdateWithoutRoomChunksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -422,7 +422,7 @@ export type RoomCreateWithoutQuestionsInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  audioChunks?: Prisma.AudioChunkCreateNestedManyWithoutRoomInput
+  roomChunks?: Prisma.RoomChunkCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUncheckedCreateWithoutQuestionsInput = {
@@ -431,7 +431,7 @@ export type RoomUncheckedCreateWithoutQuestionsInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  audioChunks?: Prisma.AudioChunkUncheckedCreateNestedManyWithoutRoomInput
+  roomChunks?: Prisma.RoomChunkUncheckedCreateNestedManyWithoutRoomInput
 }
 
 export type RoomCreateOrConnectWithoutQuestionsInput = {
@@ -456,7 +456,7 @@ export type RoomUpdateWithoutQuestionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  audioChunks?: Prisma.AudioChunkUpdateManyWithoutRoomNestedInput
+  roomChunks?: Prisma.RoomChunkUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutQuestionsInput = {
@@ -465,7 +465,7 @@ export type RoomUncheckedUpdateWithoutQuestionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  audioChunks?: Prisma.AudioChunkUncheckedUpdateManyWithoutRoomNestedInput
+  roomChunks?: Prisma.RoomChunkUncheckedUpdateManyWithoutRoomNestedInput
 }
 
 
@@ -474,12 +474,12 @@ export type RoomUncheckedUpdateWithoutQuestionsInput = {
  */
 
 export type RoomCountOutputType = {
-  audioChunks: number
+  roomChunks: number
   questions: number
 }
 
 export type RoomCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  audioChunks?: boolean | RoomCountOutputTypeCountAudioChunksArgs
+  roomChunks?: boolean | RoomCountOutputTypeCountRoomChunksArgs
   questions?: boolean | RoomCountOutputTypeCountQuestionsArgs
 }
 
@@ -496,8 +496,8 @@ export type RoomCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * RoomCountOutputType without action
  */
-export type RoomCountOutputTypeCountAudioChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AudioChunkWhereInput
+export type RoomCountOutputTypeCountRoomChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RoomChunkWhereInput
 }
 
 /**
@@ -514,7 +514,7 @@ export type RoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  audioChunks?: boolean | Prisma.Room$audioChunksArgs<ExtArgs>
+  roomChunks?: boolean | Prisma.Room$roomChunksArgs<ExtArgs>
   questions?: boolean | Prisma.Room$questionsArgs<ExtArgs>
   _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
@@ -545,7 +545,7 @@ export type RoomSelectScalar = {
 
 export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["room"]>
 export type RoomInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  audioChunks?: boolean | Prisma.Room$audioChunksArgs<ExtArgs>
+  roomChunks?: boolean | Prisma.Room$roomChunksArgs<ExtArgs>
   questions?: boolean | Prisma.Room$questionsArgs<ExtArgs>
   _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -555,7 +555,7 @@ export type RoomIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Room"
   objects: {
-    audioChunks: Prisma.$AudioChunkPayload<ExtArgs>[]
+    roomChunks: Prisma.$RoomChunkPayload<ExtArgs>[]
     questions: Prisma.$QuestionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -958,7 +958,7 @@ readonly fields: RoomFieldRefs;
  */
 export interface Prisma__RoomClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  audioChunks<T extends Prisma.Room$audioChunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$audioChunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AudioChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  roomChunks<T extends Prisma.Room$roomChunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$roomChunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   questions<T extends Prisma.Room$questionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1382,27 +1382,27 @@ export type RoomDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Room.audioChunks
+ * Room.roomChunks
  */
-export type Room$audioChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Room$roomChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the AudioChunk
+   * Select specific fields to fetch from the RoomChunk
    */
-  select?: Prisma.AudioChunkSelect<ExtArgs> | null
+  select?: Prisma.RoomChunkSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the AudioChunk
+   * Omit specific fields from the RoomChunk
    */
-  omit?: Prisma.AudioChunkOmit<ExtArgs> | null
+  omit?: Prisma.RoomChunkOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AudioChunkInclude<ExtArgs> | null
-  where?: Prisma.AudioChunkWhereInput
-  orderBy?: Prisma.AudioChunkOrderByWithRelationInput | Prisma.AudioChunkOrderByWithRelationInput[]
-  cursor?: Prisma.AudioChunkWhereUniqueInput
+  include?: Prisma.RoomChunkInclude<ExtArgs> | null
+  where?: Prisma.RoomChunkWhereInput
+  orderBy?: Prisma.RoomChunkOrderByWithRelationInput | Prisma.RoomChunkOrderByWithRelationInput[]
+  cursor?: Prisma.RoomChunkWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AudioChunkScalarFieldEnum | Prisma.AudioChunkScalarFieldEnum[]
+  distinct?: Prisma.RoomChunkScalarFieldEnum | Prisma.RoomChunkScalarFieldEnum[]
 }
 
 /**

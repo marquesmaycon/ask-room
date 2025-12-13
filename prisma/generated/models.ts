@@ -9,6 +9,10 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Room'
-export type * from './models/AudioChunk'
+export type * from './models/RoomChunk'
 export type * from './models/Question'
+export type * from './models/User'
+export type * from './models/Session'
+export type * from './models/Account'
+export type * from './models/Verification'
 export type * from './commonInputTypes'
