@@ -3,8 +3,10 @@ import { Hono } from "hono"
 import z from "zod"
 
 import { prisma } from "@/lib/prisma"
+import { sessionMiddleware } from "@/lib/session-middleware"
 import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
 
+import { createRoomChunk } from "../room-service"
 import { questionSchema, roomSchema } from "../schemas"
 
 const roomIdParamValidator = zValidator("param", z.object({ id: z.string() }))
@@ -16,6 +18,7 @@ const roomsController = new Hono()
         id: true,
         name: true,
         description: true,
+
         _count: { select: { questions: true } }
       },
       orderBy: { createdAt: "desc" }
@@ -33,11 +36,17 @@ const roomsController = new Hono()
 
     return c.json({ room })
   })
-  .post("/", zValidator("json", roomSchema), async (c) => {
+  .post("/", sessionMiddleware, zValidator("json", roomSchema), async (c) => {
     const data = c.req.valid("json")
+    const user = c.get("user")
 
     const room = await prisma.room.create({
-      data
+      data: {
+        ...data,
+        user: {
+          connect: { id: user.id }
+        }
+      }
     })
 
     return c.json({ room })
@@ -46,11 +55,9 @@ const roomsController = new Hono()
     const { id: roomId } = c.req.valid("param")
     const { question } = c.req.valid("json")
 
-    // Gera embeddings da pergunta
     const embeddings = await generateEmbbedings(question)
     const embeddingsString = `[${embeddings.join(",")}]`
 
-    // Busca os chunks de áudio mais similares usando busca vetorial
     const chunks = await prisma.$queryRaw<
       Array<{
         id: string
@@ -110,23 +117,11 @@ const roomsController = new Hono()
 
         const embeddings = await generateEmbbedings(text)
 
-        const audioChunk = await prisma.$transaction(async (tx) => {
-          const chunk = await tx.audioChunk.create({
-            data: { roomId, transcription: text }
-          })
-
-          await tx.$executeRaw`
-            UPDATE audio_chunks 
-            SET embeddings = ${JSON.stringify(embeddings)}::vector
-            WHERE id = ${chunk.id}
-          `
-
-          return chunk
-        })
+        const roomChunk = await createRoomChunk(roomId, text, embeddings)
 
         return c.json(
           {
-            id: audioChunk.id,
+            id: roomChunk.id,
             transcription: text,
             embeddings,
             roomId
@@ -170,23 +165,11 @@ const roomsController = new Hono()
         const transcription = await transcribeAudio(audioBase64, mimeType)
         const embeddings = await generateEmbbedings(transcription)
 
-        const audioChunk = await prisma.$transaction(async (tx) => {
-          const chunk = await tx.audioChunk.create({
-            data: { roomId, transcription }
-          })
-
-          await tx.$executeRaw`
-            UPDATE audio_chunks 
-            SET embeddings = ${JSON.stringify(embeddings)}::vector
-            WHERE id = ${chunk.id}
-          `
-
-          return chunk
-        })
+        const roomChunk = await createRoomChunk(roomId, transcription, embeddings)
 
         return c.json(
           {
-            id: audioChunk.id,
+            id: roomChunk.id,
             transcription,
             embeddings,
             roomId
