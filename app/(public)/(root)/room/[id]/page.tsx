@@ -10,11 +10,19 @@ import { FeedRoomContext } from "@/features/room/components/feed-room-context"
 import { RecordRoomAudio } from "@/features/room/components/record-room-audio"
 import { RoomQuestionForm } from "@/features/room/components/room-question-form"
 import { useRoom } from "@/features/room/hooks/use-room"
+import { authClient } from "@/lib/auth-client"
 
 export default function RoomPage() {
   const { id } = useParams<{ id: string }>()
+  const { data: session, isPending } = authClient.useSession()
 
   const { data: room } = useRoom({ param: { id } })
+
+  const isMyRoom = session?.user?.id === room?.userId
+
+  if (isPending) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="space-y-8">
@@ -32,10 +40,12 @@ export default function RoomPage() {
             <p>{room?.description}</p>
           </div>
         </div>
-        <div className="space-x-2">
-          <FeedRoomContext />
-          <RecordRoomAudio />
-        </div>
+        {isMyRoom && (
+          <div className="space-x-2">
+            <FeedRoomContext />
+            <RecordRoomAudio />
+          </div>
+        )}
       </div>
       <div className="space-y-4">
         <RoomQuestionForm />
