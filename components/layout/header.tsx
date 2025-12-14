@@ -13,10 +13,12 @@ export async function Header() {
   return (
     <header>
       <div className="flex items-center justify-between py-6">
-        <h2 className="font-sans text-3xl font-bold">
-          <BrainCircuit className="mr-2 inline size-10" />
-          Ask Room
-        </h2>
+        <Link href="/">
+          <h2 className="font-sans text-3xl font-bold">
+            <BrainCircuit className="mr-2 inline size-10" />
+            Ask Room
+          </h2>
+        </Link>
         <div className="flex items-center gap-8">
           <Button variant="outline" size="sm">
             <Lock /> Código de Acesso

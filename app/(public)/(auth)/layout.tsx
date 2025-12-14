@@ -2,6 +2,7 @@ import { BrainCircuit } from "lucide-react"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
+import { Footer } from "@/components/layout/footer"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { auth } from "@/lib/auth"
 
@@ -31,11 +32,7 @@ export default async function AuthLayout({
 
       <main className="w-full max-w-md">{children}</main>
 
-      <footer className="fixed bottom-12">
-        <p className="text-muted-foreground text-center text-sm">
-          &copy; {new Date().getFullYear()} Ask Room. Todos os direitos reservados.
-        </p>
-      </footer>
+      <Footer className="fixed bottom-12 mx-auto" />
     </div>
   )
 }

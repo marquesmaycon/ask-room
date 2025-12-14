@@ -6,9 +6,11 @@ export default function PublicLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="mx-auto min-h-screen max-w-4xl bg-slate-200 px-4 py-4">
-      <Header />
-      <main>{children}</main>
+    <div className="bg-slate-200">
+      <div className="mx-auto min-h-screen max-w-4xl px-4 py-4">
+        <Header />
+        <main>{children}</main>
+      </div>
     </div>
   )
 }
