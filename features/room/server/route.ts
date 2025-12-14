@@ -4,7 +4,7 @@ import z from "zod"
 
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { sessionMiddleware } from "@/lib/session-middleware"
+import { authMiddleware, sessionMiddleware } from "@/lib/session-middleware"
 import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
 
 import { createRoomChunk } from "../room-service"
@@ -13,6 +13,7 @@ import { questionSchema, roomSchema } from "../schemas"
 const roomIdParamValidator = zValidator("param", z.object({ id: z.string() }))
 
 const roomsController = new Hono()
+  .use("*", sessionMiddleware)
   .get("/", async (c) => {
     const rooms = await prisma.room.findMany({
       select: {
@@ -28,17 +29,27 @@ const roomsController = new Hono()
 
     return c.json({ rooms })
   })
+  .get("/my-rooms", authMiddleware, async (c) => {
+    const user = c.get("user")
+
+    const rooms = await prisma.room.findMany({
+      where: { userId: user?.id },
+      orderBy: { createdAt: "desc" }
+    })
+
+    return c.json({ rooms })
+  })
   .get("/:id", roomIdParamValidator, async (c) => {
     const { id } = c.req.valid("param")
 
     const room = await prisma.room.findUnique({
       where: { id },
-      include: { questions: true , invites: true }
+      include: { questions: true, invites: true }
     })
 
     return c.json({ room })
   })
-  .post("/", sessionMiddleware, zValidator("json", roomSchema), async (c) => {
+  .post("/", authMiddleware, zValidator("json", roomSchema), async (c) => {
     const { invites, ...data } = c.req.valid("json")
     const user = c.get("user")
 
