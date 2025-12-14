@@ -19,7 +19,7 @@ export async function Header() {
             Ask Room
           </h2>
         </Link>
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
             <Lock /> Código de Acesso
           </Button>

@@ -28,7 +28,7 @@ export function UserMenu({ user }: UserMenuProps) {
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage src={user.image || ""} />
-          <AvatarFallback className="text-sm font-bold">
+          <AvatarFallback className="border text-sm font-bold">
             {extractInitials(user.name)}
           </AvatarFallback>
         </Avatar>

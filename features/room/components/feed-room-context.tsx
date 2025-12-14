@@ -1,3 +1,5 @@
+"use client"
+
 import { BrainCog, TextSelect } from "lucide-react"
 import { useParams } from "next/navigation"
 

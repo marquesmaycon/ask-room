@@ -55,7 +55,7 @@ export const RoomForm = () => {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="space-y-4 rounded-lg border px-4 py-6"
+      className="bg-background space-y-4 rounded-lg border px-4 py-6"
     >
       <FieldGroup>
         <form.AppField name="name">
