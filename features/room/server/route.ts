@@ -22,6 +22,7 @@ const roomsController = new Hono()
 
         _count: { select: { questions: true } }
       },
+      where: { visibility: "PUBLIC" },
       orderBy: { createdAt: "desc" }
     })
 
@@ -32,13 +33,13 @@ const roomsController = new Hono()
 
     const room = await prisma.room.findUnique({
       where: { id },
-      include: { questions: true }
+      include: { questions: true , invites: true }
     })
 
     return c.json({ room })
   })
   .post("/", sessionMiddleware, zValidator("json", roomSchema), async (c) => {
-    const data = c.req.valid("json")
+    const { invites, ...data } = c.req.valid("json")
     const user = c.get("user")
 
     const room = await prisma.room.create({
@@ -49,6 +50,15 @@ const roomsController = new Hono()
         }
       }
     })
+
+    if (invites && invites.length > 0) {
+      await prisma.invite.createMany({
+        data: invites.map((email) => ({
+          email,
+          roomId: room.id
+        }))
+      })
+    }
 
     return c.json({ room })
   })

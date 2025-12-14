@@ -1,5 +1,7 @@
 "use client"
 
+import { useTransition } from "react"
+
 import { FieldGroup } from "@/components/ui/field"
 import { useAppForm } from "@/hooks/form"
 
@@ -7,6 +9,8 @@ import { signIn } from "../actions"
 import { signInSchema } from "../schemas"
 
 export const SignInForm = () => {
+  const [isPending, startTransition] = useTransition()
+
   const form = useAppForm({
     defaultValues: {
       email: "",
@@ -16,7 +20,9 @@ export const SignInForm = () => {
       onSubmit: signInSchema
     },
     onSubmit: async ({ value }) => {
-      await signIn(value)
+      startTransition(async () => {
+        await signIn(value)
+      })
     }
   })
   return (
@@ -37,7 +43,7 @@ export const SignInForm = () => {
           )}
         </form.AppField>
         <form.AppForm>
-          <form.SubmitButton label="Entrar" />
+          <form.SubmitButton label="Entrar" loading={isPending} />
         </form.AppForm>
       </FieldGroup>
     </form>

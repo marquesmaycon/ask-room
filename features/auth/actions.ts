@@ -1,6 +1,7 @@
 "use server"
 
 import { headers } from "next/headers"
+import { redirect } from "next/navigation"
 
 import { auth } from "@/lib/auth"
 
@@ -11,24 +12,22 @@ export const signUp = async ({ name, email, password }: SignUpSchema) => {
     body: {
       email,
       name,
-      password,
-      callbackURL: "/dashboard"
+      password
     }
   })
 
-  return result
+  if (result) redirect("/dashboard")
 }
 
 export const signIn = async ({ email, password }: SignInSchema) => {
   const result = await auth.api.signInEmail({
     body: {
       email,
-      password,
-      callbackURL: "/dashboard"
+      password
     }
   })
 
-  return result
+  if (result) redirect("/dashboard")
 }
 
 export const signOut = async () => {
