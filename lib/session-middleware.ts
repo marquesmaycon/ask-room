@@ -1,23 +1,37 @@
-import type { User } from "better-auth"
+import type { Session, User } from "better-auth"
 import { createMiddleware } from "hono/factory"
-import { headers } from "next/headers"
 
 import { auth } from "./auth"
 
 type SessionMiddlewareContext = {
   Variables: {
-    user?: User
+    user: User | null
+    session: Session | null
   }
 }
 
 export const sessionMiddleware = createMiddleware<SessionMiddlewareContext>(async (c, next) => {
-  const session = await auth.api.getSession({ headers: await headers() })
+  const session = await auth.api.getSession({ headers: c.req.raw.headers })
 
   if (!session) {
-    return c.json({ error: "Unauthorized" }, 401)
+    c.set("user", null)
+    c.set("session", null)
+    await next()
+    return
   }
 
   c.set("user", session.user)
+  c.set("session", session.session)
+
+  await next()
+})
+
+export const authMiddleware = createMiddleware<SessionMiddlewareContext>(async (c, next) => {
+  const user = c.get("user")
+
+  if (!user) {
+    return c.json({ message: "Unauthorized" }, 401)
+  }
 
   await next()
 })
