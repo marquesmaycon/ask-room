@@ -8,18 +8,26 @@ datasource db {
 }
 
 model Room {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   description String?
   userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  visibility  Visibility @default(PUBLIC)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   roomChunks RoomChunk[]
   questions  Question[]
   user       User        @relation(fields: [userId], references: [id])
+  invites    Invite[]
 
   @@map("rooms")
+}
+
+enum Visibility {
+  PUBLIC
+  LINK
+  PRIVATE
 }
 
 model RoomChunk {
@@ -49,6 +57,18 @@ model Question {
 
   @@index([roomId])
   @@map("questions")
+}
+
+model Invite {
+  id        String   @id @default(uuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId])
+  @@map("invites")
 }
 
 model User {

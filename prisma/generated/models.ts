@@ -11,6 +11,7 @@
 export type * from './models/Room'
 export type * from './models/RoomChunk'
 export type * from './models/Question'
+export type * from './models/Invite'
 export type * from './models/User'
 export type * from './models/Session'
 export type * from './models/Account'

@@ -33,6 +33,11 @@ export type RoomChunk = Prisma.RoomChunkModel
  */
 export type Question = Prisma.QuestionModel
 /**
+ * Model Invite
+ * 
+ */
+export type Invite = Prisma.InviteModel
+/**
  * Model User
  * 
  */

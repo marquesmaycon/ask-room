@@ -54,6 +54,7 @@ export const ModelName = {
   Room: 'Room',
   RoomChunk: 'RoomChunk',
   Question: 'Question',
+  Invite: 'Invite',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -81,6 +82,7 @@ export const RoomScalarFieldEnum = {
   name: 'name',
   description: 'description',
   userId: 'userId',
+  visibility: 'visibility',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -110,6 +112,17 @@ export const QuestionScalarFieldEnum = {
 } as const
 
 export type QuestionScalarFieldEnum = (typeof QuestionScalarFieldEnum)[keyof typeof QuestionScalarFieldEnum]
+
+
+export const InviteScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  email: 'email',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InviteScalarFieldEnum = (typeof InviteScalarFieldEnum)[keyof typeof InviteScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
