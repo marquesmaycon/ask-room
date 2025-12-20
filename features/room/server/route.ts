@@ -39,6 +39,21 @@ const roomsController = new Hono()
 
     return c.json({ rooms })
   })
+  .get("/:id/details", authMiddleware, roomIdParamValidator, async (c) => {
+    const { id } = c.req.valid("param")
+    const user = c.get("user")
+
+    const room = await prisma.room.findUnique({
+      where: { id },
+      include: { questions: true, invites: true }
+    })
+
+    if (user?.id !== room?.userId) {
+      return c.json({ message: "Unauthorized" }, 401)
+    }
+
+    return c.json({ room }, 200)
+  })
   .get("/:id", roomIdParamValidator, async (c) => {
     const { id } = c.req.valid("param")
 
