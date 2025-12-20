@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { auth } from "@/lib/auth"
+import { getQueryClient } from "@/lib/tanstack-query"
 
 import type { SignInSchema, SignUpSchema } from "./schemas"
 
@@ -31,5 +32,10 @@ export const signIn = async ({ email, password }: SignInSchema) => {
 }
 
 export const signOut = async () => {
-  return await auth.api.signOut({ headers: await headers() })
+  const res = await auth.api.signOut({ headers: await headers() })
+
+  const queryClient = getQueryClient()
+  queryClient.clear()
+
+  return res
 }
