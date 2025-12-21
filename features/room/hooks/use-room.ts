@@ -12,6 +12,7 @@ export const roomQueryOptions = ({ param }: RequestType) =>
     queryKey: ["rooms", param.id],
     queryFn: async () => {
       const res = await getRoomRequest({ param })
+
       const { room } = await res.json()
       return room
     }

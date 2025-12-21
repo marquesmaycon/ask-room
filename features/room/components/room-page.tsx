@@ -1,6 +1,5 @@
 "use client"
 
-import { useSuspenseQuery } from "@tanstack/react-query"
 import { ChevronLeft, MessageCircleQuestionMark } from "lucide-react"
 import Link from "next/link"
 import { redirect, useParams } from "next/navigation"
@@ -10,7 +9,7 @@ import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/i
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
-import { roomQueryOptions } from "../hooks/use-room"
+import { useRoom } from "../hooks/use-room"
 import { FeedRoomContext } from "./feed-room-context"
 import { RecordRoomAudio } from "./record-room-audio"
 import { RoomQuestionForm } from "./room-question-form"
@@ -19,7 +18,7 @@ export function RoomPage() {
   const { id } = useParams<{ id: string }>()
   const { data: session, isPending } = authClient.useSession()
 
-  const { data: room } = useSuspenseQuery(roomQueryOptions({ param: { id } }))
+  const { data: room } = useRoom({ param: { id } })
 
   const isMyRoom = session?.user?.id === room?.userId
 
