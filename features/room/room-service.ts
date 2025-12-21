@@ -11,7 +11,7 @@ export const createRoomChunk = async (
     })
 
     await tx.$executeRaw`
-      UPDATE audio_chunks 
+      UPDATE room_chunks 
       SET embeddings = ${JSON.stringify(embeddings)}::vector
       WHERE id = ${chunk.id}
     `

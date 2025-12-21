@@ -45,7 +45,7 @@ const roomsController = new Hono()
 
     const room = await prisma.room.findUnique({
       where: { id },
-      include: { questions: true, invites: true }
+      include: { questions: true, invites: true, roomChunks: true }
     })
 
     if (user?.id !== room?.userId) {
