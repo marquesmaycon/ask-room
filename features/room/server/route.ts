@@ -2,7 +2,6 @@ import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import z from "zod"
 
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { authMiddleware, sessionMiddleware } from "@/lib/session-middleware"
 import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
@@ -45,7 +44,13 @@ const roomsController = new Hono()
 
     const room = await prisma.room.findUnique({
       where: { id },
-      include: { questions: true, invites: true, roomChunks: true }
+      include: {
+        questions: {
+          orderBy: [{ pinned: "desc" }, { createdAt: "asc" }]
+        },
+        invites: true,
+        roomChunks: true
+      }
     })
 
     if (user?.id !== room?.userId) {
@@ -132,7 +137,7 @@ const roomsController = new Hono()
     const { id: roomId } = c.req.valid("param")
     const { question } = c.req.valid("json")
 
-    const session = await auth.api.getSession()
+    const user = c.get("user")
 
     const embeddings = await generateEmbbedings(question)
     const embeddingsString = `[${embeddings.join(",")}]`
@@ -164,7 +169,7 @@ const roomsController = new Hono()
         roomId,
         question,
         answer,
-        userId: session?.user?.id || null
+        userId: user?.id || null
       },
       select: {
         id: true,
@@ -265,6 +270,55 @@ const roomsController = new Hono()
           500
         )
       }
+    }
+  )
+  .patch(
+    "/questions/:id/pin",
+    authMiddleware,
+    zValidator("param", z.object({ id: z.string() })),
+    async (c) => {
+      const { id } = c.req.valid("param")
+      const user = c.get("user")
+
+      const question = await prisma.question.findUniqueOrThrow({
+        where: { id },
+        include: { room: { select: { userId: true } } }
+      })
+
+      if (user?.id !== question.room.userId) {
+        return c.json({ message: "Unauthorized" }, 401)
+      }
+
+      await prisma.question.update({
+        where: { id: question.id },
+        data: { pinned: !question.pinned }
+      })
+
+      return c.body(null, 204)
+    }
+  )
+  .delete(
+    "/questions/:id",
+    authMiddleware,
+    zValidator("param", z.object({ id: z.string() })),
+    async (c) => {
+      const { id } = c.req.valid("param")
+      const user = c.get("user")
+
+      const question = await prisma.question.findUniqueOrThrow({
+        where: { id },
+        include: { room: { select: { userId: true } } }
+      })
+
+      if (user?.id !== question.room.userId) {
+        return c.json({ message: "Unauthorized" }, 401)
+      }
+
+      await prisma.question.deleteMany({
+        where: { id: question.id }
+      })
+
+      return c.body(null, 204)
     }
   )
 

@@ -107,6 +107,7 @@ export const QuestionScalarFieldEnum = {
   question: 'question',
   answer: 'answer',
   userId: 'userId',
+  pinned: 'pinned',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

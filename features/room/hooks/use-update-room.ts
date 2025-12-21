@@ -4,6 +4,7 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
+import { roomQueryOptions } from "./use-room"
 import { roomsQueryOptions } from "./use-rooms"
 
 const updateRoomRequest = client.api.rooms[":id"].$put
@@ -24,9 +25,10 @@ export const useUpdateRoom = () => {
       const { room } = await res.json()
       return room
     },
-    onSuccess: () => {
+    onSuccess: (room) => {
       toast.success("Room updated successfully")
       queryClient.invalidateQueries(roomsQueryOptions)
+      queryClient.invalidateQueries(roomQueryOptions({ param: { id: room.id } }))
     },
     onError: (error: Error) => {
       toast.error(`An error occurred while updating the room: ${error.message}`)

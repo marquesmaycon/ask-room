@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronLeft, MessageCircleQuestionMark } from "lucide-react"
+import { Cog, MessageCircleQuestionMark } from "lucide-react"
 import Link from "next/link"
 import { redirect, useParams } from "next/navigation"
 
@@ -10,8 +10,6 @@ import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
 import { useRoom } from "../hooks/use-room"
-import { FeedRoomContext } from "./feed-room-context"
-import { RecordRoomAudio } from "./record-room-audio"
 import { RoomQuestionForm } from "./room-question-form"
 
 export function RoomPage() {
@@ -38,11 +36,6 @@ export function RoomPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div className="flex items-start gap-2">
-          <Link href="/">
-            <Button size="icon-sm" variant="ghost">
-              <ChevronLeft />
-            </Button>
-          </Link>
           <div>
             <h1 className="font-sans text-4xl">
               <b>{room?.name}</b>
@@ -51,8 +44,11 @@ export function RoomPage() {
           </div>
         </div>
         <div className={cn("space-x-2", !isMyRoom && "hidden")}>
-          <FeedRoomContext />
-          <RecordRoomAudio />
+          <Button asChild variant="outline">
+            <Link href={`/dashboard/room/${id}`}>
+              Configurar <Cog />
+            </Link>
+          </Button>
         </div>
       </div>
       <div className="space-y-4">

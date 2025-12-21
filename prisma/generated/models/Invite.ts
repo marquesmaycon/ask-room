@@ -196,6 +196,7 @@ export type InviteOrderByWithRelationInput = {
 
 export type InviteWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  email_roomId?: Prisma.InviteEmailRoomIdCompoundUniqueInput
   AND?: Prisma.InviteWhereInput | Prisma.InviteWhereInput[]
   OR?: Prisma.InviteWhereInput[]
   NOT?: Prisma.InviteWhereInput | Prisma.InviteWhereInput[]
@@ -204,7 +205,7 @@ export type InviteWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Invite"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invite"> | Date | string
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
-}, "id">
+}, "id" | "email_roomId">
 
 export type InviteOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -291,6 +292,11 @@ export type InviteListRelationFilter = {
 
 export type InviteOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type InviteEmailRoomIdCompoundUniqueInput = {
+  email: string
+  roomId: string
 }
 
 export type InviteCountOrderByAggregateInput = {
