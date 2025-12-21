@@ -4,6 +4,7 @@ import { LogIn } from "lucide-react"
 import Link from "next/link"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -42,7 +43,7 @@ export const RoomList = () => {
                 </CardAction>
               </CardHeader>
               <CardFooter className="mt-auto">
-                <Avatar className="">
+                <Avatar>
                   <AvatarImage
                     src={room.user.image || undefined}
                     alt={room.user.name || "User avatar"}
@@ -52,6 +53,12 @@ export const RoomList = () => {
                   </AvatarFallback>
                 </Avatar>
                 <small className="ml-2">Criado por {room.user.name}</small>
+                <Badge
+                  variant="secondary"
+                  className="ml-auto bg-violet-400 text-white dark:bg-blue-600"
+                >
+                  {room._count.questions} perguntas
+                </Badge>
               </CardFooter>
             </Card>
           </li>
