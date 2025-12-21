@@ -1,8 +1,8 @@
 "use client"
 
 import { formOptions } from "@tanstack/react-form"
-import { Plus } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Plus, Trash } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { FieldGroup } from "@/components/ui/field"
@@ -10,6 +10,8 @@ import { useAppForm } from "@/hooks/form"
 import { Visibility } from "@/prisma/generated/enums"
 
 import { useCreateRoom } from "../hooks/use-create-room"
+import { useRoomDetails } from "../hooks/use-room-details"
+import { useUpdateRoom } from "../hooks/use-update-room"
 import { type RoomSchema, roomSchema } from "../schemas"
 
 const visibilityOptions = [
@@ -37,15 +39,31 @@ const roomFormOptions = formOptions({
   }
 })
 
-export const RoomForm = () => {
+type RoomFormProps = {
+  type: "create" | "edit"
+}
+
+export const RoomForm = ({ type }: RoomFormProps) => {
   const router = useRouter()
-  const { mutateAsync } = useCreateRoom()
+  const { id } = useParams<{ id?: string }>()
+
+  const EDIT_MODE = type === "edit" && id
+
+  const { data: room } = useRoomDetails({ param: { id: id ?? "" } })
+
+  const { mutateAsync: createRoom } = useCreateRoom()
+  const { mutateAsync: updateRoom } = useUpdateRoom()
 
   const form = useAppForm({
     ...roomFormOptions,
+    defaultValues: room ?? roomDefaultValues,
     onSubmit: async ({ value }) => {
-      const room = await mutateAsync({ json: value })
-      router.push(`/room/${room.id}`)
+      if (EDIT_MODE) {
+        await updateRoom({ param: { id }, json: value })
+      } else {
+        const room = await createRoom({ json: value })
+        router.push(`/dashboard/room/${room.id}`)
+      }
     }
   })
 
@@ -83,20 +101,35 @@ export const RoomForm = () => {
                   <div className="space-y-4 rounded-lg border p-3">
                     <div className="flex items-center justify-between">
                       <h3 className="font-sans">Convidar usuários</h3>
-                      <Button type="button" size="icon-sm" onClick={() => field.pushValue("")}>
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        onClick={() => field.pushValue({ email: "" })}
+                      >
                         <Plus />
                       </Button>
                     </div>
                     <div className="space-y-2">
                       {field.state.value?.map((_, index) => (
-                        <form.AppField key={index} name={`invites[${index}]`}>
-                          {({ InputField }) => (
-                            <InputField
-                              label={`Convidado ${index + 1}`}
-                              placeholder="digite o email do convidado"
-                            />
-                          )}
-                        </form.AppField>
+                        <div key={index} className="relative flex items-end gap-2">
+                          <form.AppField name={`invites[${index}].email`}>
+                            {({ InputField }) => (
+                              <InputField
+                                label={`Convidado ${index + 1}`}
+                                placeholder="digite o email do convidado"
+                              />
+                            )}
+                          </form.AppField>
+                          <Button
+                            variant="destructive"
+                            type="button"
+                            size="icon-sm"
+                            className="mb-0.5"
+                            onClick={() => field.removeValue(index)}
+                          >
+                            <Trash />
+                          </Button>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -106,7 +139,7 @@ export const RoomForm = () => {
           }
         </form.Subscribe>
         <form.AppForm>
-          <form.SubmitButton label="Criar" className="ml-auto" />
+          <form.SubmitButton label={EDIT_MODE ? "Atualizar" : "Criar"} className="ml-auto" />
         </form.AppForm>
       </FieldGroup>
     </form>

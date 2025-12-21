@@ -67,6 +67,7 @@ model Invite {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([email, roomId])
   @@index([roomId])
   @@map("invites")
 }

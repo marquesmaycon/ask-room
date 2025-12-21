@@ -6,7 +6,7 @@ export default function CreateRoomPage() {
       <div>
         <h1 className="font-sans text-xl font-semibold">Crie uma nova sala</h1>
       </div>
-      <RoomForm />
+      <RoomForm type="create" />
     </div>
   )
 }

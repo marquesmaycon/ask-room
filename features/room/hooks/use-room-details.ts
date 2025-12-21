@@ -28,7 +28,8 @@ export const roomDetailsQueryOptions = ({ param, headers }: RoomDetailsArgs) =>
 
       const { room } = await res.json()
       return room
-    }
+    },
+    enabled: !!param.id
   })
 
 export const useRoomDetails = (args: RoomDetailsArgs) => {

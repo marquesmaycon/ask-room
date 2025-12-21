@@ -57,7 +57,7 @@ const roomsController = new Hono()
   .get("/:id", roomIdParamValidator, async (c) => {
     const { id } = c.req.valid("param")
 
-    const room = await prisma.room.findUnique({
+    const room = await prisma.room.findUniqueOrThrow({
       where: { id },
       include: { questions: true, invites: true }
     })
@@ -79,7 +79,7 @@ const roomsController = new Hono()
 
     if (invites && invites.length > 0) {
       await prisma.invite.createMany({
-        data: invites.map((email) => ({
+        data: invites.map(({ email }) => ({
           email,
           roomId: room.id
         }))
@@ -87,6 +87,46 @@ const roomsController = new Hono()
     }
 
     return c.json({ room })
+  })
+  .put("/:id", authMiddleware, roomIdParamValidator, zValidator("json", roomSchema), async (c) => {
+    const { id } = c.req.valid("param")
+    const { invites, ...data } = c.req.valid("json")
+    const user = c.get("user")
+
+    const room = await prisma.room.findUniqueOrThrow({
+      where: { id }
+    })
+
+    if (user?.id !== room.userId) {
+      return c.json({ message: "Unauthorized" }, 401)
+    }
+
+    const updated = await prisma.room.update({
+      where: { id },
+      data
+    })
+
+    // TO DO => EVITAR DUPLICIDADES
+    if (invites && invites.length > 0) {
+      await prisma.invite.createMany({
+        data: invites.map(({ email }) => ({
+          email,
+          roomId: room.id
+        })),
+        skipDuplicates: true
+      })
+    }
+
+    await prisma.invite.deleteMany({
+      where: {
+        roomId: id,
+        email: {
+          notIn: invites?.map(({ email }) => email)
+        }
+      }
+    })
+
+    return c.json({ room: updated }, 200)
   })
   .post("/:id/questions", roomIdParamValidator, zValidator("json", questionSchema), async (c) => {
     const { id: roomId } = c.req.valid("param")

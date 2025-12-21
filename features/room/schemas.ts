@@ -4,9 +4,9 @@ import { Visibility } from "@/prisma/generated/enums"
 
 export const roomSchema = z.object({
   name: z.string().min(3).max(50),
-  description: z.string().max(200).optional(),
+  description: z.string().max(200).nullable(),
   visibility: z.enum(Visibility),
-  invites: z.array(z.email()).optional()
+  invites: z.array(z.object({ email: z.email() })).optional()
 })
 
 export type RoomSchema = z.infer<typeof roomSchema>
