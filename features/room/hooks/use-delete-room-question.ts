@@ -28,8 +28,8 @@ export const useDeleteRoomQuestion = () => {
       toast.success("Pergunta deletada com sucesso.")
       queryClient.invalidateQueries(roomQueryOptions({ param: { id: roomId } }))
     },
-    onError: () => {
-      toast.error("Ocorreu um erro ao deletar a pergunta.")
+    onError: (err) => {
+      toast.error("Ocorreu um erro ao deletar a pergunta.", { description: err.message })
     }
   })
 }

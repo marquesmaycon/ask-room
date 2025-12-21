@@ -28,8 +28,8 @@ export const usePinQuestion = () => {
       toast.success("Pergunta fixada com sucesso.")
       queryClient.invalidateQueries(roomQueryOptions({ param: { id: roomId } }))
     },
-    onError: () => {
-      toast.error("Ocorreu um erro ao fixar a pergunta.")
+    onError: (err) => {
+      toast.error("Ocorreu um erro ao fixar a pergunta.", { description: err.message })
     }
   })
 }

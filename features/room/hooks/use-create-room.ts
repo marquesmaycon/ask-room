@@ -5,6 +5,7 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
+import { myRoomsQueryOptions } from "./use-my-rooms"
 import { roomsQueryOptions } from "./use-rooms"
 
 const createRoomRequest = client.api.rooms.$post
@@ -17,16 +18,18 @@ export const useCreateRoom = () => {
   return useMutation({
     mutationFn: async ({ json }: RequestType) => {
       const res = await createRoomRequest({ json })
+
       const { room } = await res.json()
       return room
     },
     onSuccess: (room) => {
       toast.success("Room created successfully")
       queryClient.invalidateQueries(roomsQueryOptions)
+      queryClient.invalidateQueries(myRoomsQueryOptions())
       navigate.push(`/room/${room.id}`)
     },
-    onError: () => {
-      toast.error("An error occurred while creating the room.")
+    onError: (err) => {
+      toast.error("An error occurred while creating the room", { description: err.message })
     }
   })
 }

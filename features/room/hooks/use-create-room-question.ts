@@ -4,7 +4,7 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomsQueryOptions } from "./use-rooms"
+import { roomQueryOptions } from "./use-room"
 
 const createRoomQuestionRequest = client.api.rooms[":id"].questions.$post
 
@@ -17,18 +17,19 @@ export const useCreateRoomQuestion = () => {
       const res = await createRoomQuestionRequest({ param, json })
 
       if (!res.ok) {
-        throw new Error("Failed to create question")
+        const { message } = await res.json()
+        throw new Error(message)
       }
 
       const { question } = await res.json()
       return question
     },
-    onSuccess: () => {
+    onSuccess: (_, { param: { id } }) => {
       toast.success("Pergunta criada com sucesso.")
-      queryClient.invalidateQueries(roomsQueryOptions)
+      queryClient.invalidateQueries(roomQueryOptions({ param: { id } }))
     },
-    onError: () => {
-      toast.error("Ocorreu um erro ao criar a pergunta.")
+    onError: (err) => {
+      toast.error(`Ocorreu um erro ao criar a pergunta`, { description: err.message })
     }
   })
 }

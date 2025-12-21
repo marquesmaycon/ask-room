@@ -4,7 +4,7 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomsQueryOptions } from "./use-rooms"
+import { roomQueryOptions } from "./use-room"
 
 const uploadRoomAudioRequest = client.api.rooms[":id"].audio.$post
 
@@ -17,17 +17,19 @@ export const useUploadRoomAudio = () => {
       const res = await uploadRoomAudioRequest({ param, form })
 
       if (!res.ok) {
-        throw new Error("Failed to upload audio")
+        const { message } = await res.json()
+        throw new Error(message)
       }
 
-      return await res.json()
+      const { chunk } = await res.json()
+      return chunk
     },
-    onSuccess: () => {
+    onSuccess: (_, { param: { id } }) => {
       toast.success("Áudio enviado com sucesso.")
-      queryClient.invalidateQueries(roomsQueryOptions)
+      queryClient.invalidateQueries(roomQueryOptions({ param: { id } }))
     },
-    onError: () => {
-      toast.error("Ocorreu um erro ao enviar o áudio.")
+    onError: (err) => {
+      toast.error("Ocorreu um erro ao enviar o áudio.", { description: err.message })
     }
   })
 }

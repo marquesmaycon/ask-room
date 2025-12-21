@@ -180,7 +180,7 @@ const roomsController = new Hono()
     })
 
     if (!newQuestion) {
-      return c.json({ error: "Failed to create question" }, 500)
+      return c.json({ message: "Failed to create question" }, 500)
     }
 
     return c.json({ question: newQuestion }, 201)
@@ -202,22 +202,14 @@ const roomsController = new Hono()
 
         const embeddings = await generateEmbbedings(text)
 
-        const roomChunk = await createRoomChunk(roomId, text, embeddings)
+        const chunk = await createRoomChunk(roomId, text, embeddings)
 
-        return c.json(
-          {
-            id: roomChunk.id,
-            transcription: text,
-            embeddings,
-            roomId
-          },
-          201
-        )
+        return c.json({ chunk }, 201)
       } catch (error) {
         console.error("Text processing error:", error)
         return c.json(
           {
-            error: error instanceof Error ? error.message : "Failed to process text"
+            message: error instanceof Error ? error.message : "Failed to process text"
           },
           500
         )
@@ -240,7 +232,7 @@ const roomsController = new Hono()
         const { audio } = c.req.valid("form")
 
         if (!audio) {
-          return c.json({ error: "No audio file uploaded" }, 400)
+          return c.json({ message: "No audio file uploaded" }, 400)
         }
 
         const audioBuffer = await audio.arrayBuffer()
@@ -250,22 +242,14 @@ const roomsController = new Hono()
         const transcription = await transcribeAudio(audioBase64, mimeType)
         const embeddings = await generateEmbbedings(transcription)
 
-        const roomChunk = await createRoomChunk(roomId, transcription, embeddings)
+        const chunk = await createRoomChunk(roomId, transcription, embeddings)
 
-        return c.json(
-          {
-            id: roomChunk.id,
-            transcription,
-            embeddings,
-            roomId
-          },
-          201
-        )
+        return c.json({ chunk }, 201)
       } catch (error) {
         console.error("Audio processing error:", error)
         return c.json(
           {
-            error: error instanceof Error ? error.message : "Failed to process audio"
+            message: error instanceof Error ? error.message : "Failed to process audio"
           },
           500
         )
