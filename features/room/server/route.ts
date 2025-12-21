@@ -19,7 +19,7 @@ const roomsController = new Hono()
         id: true,
         name: true,
         description: true,
-
+        user: { select: { name: true, image: true } },
         _count: { select: { questions: true } }
       },
       where: { visibility: "PUBLIC" },
