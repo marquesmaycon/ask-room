@@ -6,8 +6,8 @@ export default function PublicLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="bg-slate-200 dark:bg-slate-900">
-      <div className="mx-auto min-h-screen max-w-4xl px-4 py-4">
+    <div className="bg-violet-50 dark:bg-violet-800">
+      <div className="mx-auto min-h-screen max-w-6xl px-4 py-4">
         <Header />
         <main>{children}</main>
       </div>

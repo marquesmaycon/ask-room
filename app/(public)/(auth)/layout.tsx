@@ -1,10 +1,13 @@
 import { BrainCircuit } from "lucide-react"
 import { headers } from "next/headers"
+import Image from "next/image"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { Footer } from "@/components/layout/footer"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { auth } from "@/lib/auth"
+import logo from "@/public/logo.svg"
 
 export default async function AuthLayout({
   children
@@ -24,10 +27,10 @@ export default async function AuthLayout({
       </div>
 
       <div className="fixed top-12">
-        <h1 className="font-sans text-3xl font-bold">
-          <BrainCircuit className="mr-2 inline size-10" />
-          Ask Room
-        </h1>
+        <Link href="/" className="flex items-center gap-2">
+          <Image src={logo} alt="Ask Room" className="h-10" />
+          <h1 className="font-sans text-3xl font-bold">Ask Room</h1>
+        </Link>
       </div>
 
       <main className="w-full max-w-md">{children}</main>

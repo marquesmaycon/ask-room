@@ -35,7 +35,7 @@ export const RoomList = () => {
                 <CardDescription>{room.description}</CardDescription>
                 <CardAction>
                   <Link href={`/room/${room.id}`}>
-                    <Button variant="outline" size="sm">
+                    <Button variant="secondary" size="sm">
                       Entrar <LogIn />
                     </Button>
                   </Link>
