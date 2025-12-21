@@ -4,7 +4,7 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomsQueryOptions } from "./use-rooms"
+import { roomQueryOptions } from "./use-room"
 
 const feedRoomRequest = client.api.rooms[":id"].text.$post
 
@@ -17,17 +17,19 @@ export const useFeedRoom = () => {
       const res = await feedRoomRequest({ param, json })
 
       if (!res.ok) {
-        throw new Error("Error feeding room with text")
+        const { message } = await res.json()
+        throw new Error(message)
       }
 
-      return await res.json()
+      const { chunk } = await res.json()
+      return chunk
     },
-    onSuccess: () => {
+    onSuccess: (_, { param: { id } }) => {
       toast.success("Texto enviado com sucesso.")
-      queryClient.invalidateQueries(roomsQueryOptions)
+      queryClient.invalidateQueries(roomQueryOptions({ param: { id } }))
     },
-    onError: () => {
-      toast.error("Ocorreu um erro ao enviar o texto.")
+    onError: (err) => {
+      toast.error("Ocorreu um erro ao enviar o texto.", { description: err.message })
     }
   })
 }
