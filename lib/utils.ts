@@ -12,3 +12,7 @@ export function extractInitials(text?: string): string {
     .join("")
     .toUpperCase()
 }
+
+export function pause(ms = 600) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
