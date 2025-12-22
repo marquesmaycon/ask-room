@@ -16,12 +16,12 @@ export default async function Home() {
       <div>
         <div className="mb-8 flex items-center justify-between">
           <h1 className="font-sans text-xl font-semibold">Salas públicas</h1>
-          <Link href="/dashboard/create-room" className="text-blue-500 underline">
-            <Button>
+          <Button asChild>
+            <Link href="/dashboard/create-room">
               Crie sua sala
               <Plus />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
         <RoomList />
       </div>

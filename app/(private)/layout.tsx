@@ -18,7 +18,7 @@ export default async function ProtectedLayout({
 
   return (
     <div className="bg-slate-200 dark:bg-slate-900">
-      <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4">
+      <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-4">
         <Header />
         {children}
         <Footer />

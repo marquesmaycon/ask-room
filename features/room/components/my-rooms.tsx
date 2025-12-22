@@ -1,19 +1,23 @@
 "use client"
 
-import { Cog, DoorClosed } from "lucide-react"
+import { Cog, DoorClosed, FolderCode } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle
+} from "@/components/ui/empty"
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item"
 
 import { useMyRooms } from "../hooks/use-my-rooms"
 
 export function MyRooms() {
-  const { data, isLoading } = useMyRooms()
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
+  const { data } = useMyRooms()
 
   return (
     <div>
@@ -41,6 +45,24 @@ export function MyRooms() {
           </li>
         ))}
       </ul>
+      {data?.length === 0 && (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FolderCode />
+            </EmptyMedia>
+            <EmptyTitle>Nenhuma sala ainda</EmptyTitle>
+            <EmptyDescription>
+              Você ainda não criou nenhuma sala. Comece criando sua primeira sala.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild>
+              <Link href="/dashboard/room/create">Criar Sala</Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      )}
     </div>
   )
 }
