@@ -64,7 +64,10 @@ const roomsController = new Hono()
 
     const room = await prisma.room.findUniqueOrThrow({
       where: { id },
-      include: { questions: true, invites: true }
+      include: {
+        questions: { include: { user: { select: { name: true } } } },
+        invites: true
+      }
     })
 
     return c.json({ room })
@@ -142,13 +145,13 @@ const roomsController = new Hono()
     const embeddings = await generateEmbbedings(question)
     const embeddingsString = `[${embeddings.join(",")}]`
 
-    const chunks = await prisma.$queryRaw<
-      Array<{
-        id: string
-        transcription: string
-        similarity: number
-      }>
-    >`
+    type Chunk = {
+      id: string
+      transcription: string
+      similarity: number
+    }
+
+    const chunks = await prisma.$queryRaw<Chunk[]>`
         SELECT 
           id,
           transcription,
@@ -159,7 +162,6 @@ const roomsController = new Hono()
         ORDER BY embeddings <=> ${embeddingsString}::vector
         LIMIT 5
       `
-
     const transcriptions = chunks.map((chunk) => chunk.transcription)
 
     const answer = await generateAnswer(question, transcriptions)
@@ -273,12 +275,13 @@ const roomsController = new Hono()
         return c.json({ message: "Unauthorized" }, 401)
       }
 
-      await prisma.question.update({
+      const data = await prisma.question.update({
         where: { id: question.id },
-        data: { pinned: !question.pinned }
+        data: { pinned: !question.pinned },
+        select: { id: true, pinned: true }
       })
 
-      return c.body(null, 204)
+      return c.json({ question: data }, 200)
     }
   )
   .delete(
