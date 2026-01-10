@@ -19,3 +19,27 @@ export const createRoomChunk = async (
     return chunk
   })
 }
+
+type Chunk = {
+  id: string
+  transcription: string
+  similarity: number
+}
+
+export const getSimilarTranscriptions = async (embeddings: number[], roomId: string) => {
+  const embeddingsString = `[${embeddings.join(",")}]`
+
+  const chunks = await prisma.$queryRaw<Chunk[]>`
+    SELECT 
+      id,
+      transcription,
+      1 - (embeddings <=> ${embeddingsString}::vector) as similarity
+    FROM room_chunks
+    WHERE "roomId" = ${roomId}
+      AND 1 - (embeddings <=> ${embeddingsString}::vector) > 0.7
+    ORDER BY embeddings <=> ${embeddingsString}::vector
+    LIMIT 5
+  `
+
+  return chunks.map((c) => c.transcription)
+}

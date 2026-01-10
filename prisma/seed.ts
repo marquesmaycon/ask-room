@@ -1,6 +1,6 @@
+import { createRoomChunk, getSimilarTranscriptions } from "@/features/room/room-service"
 import { prisma } from "@/lib/prisma"
-
-import { Visibility } from "./generated/enums"
+import { generateAnswer, generateEmbbedings } from "@/services/gemini"
 
 const roomsData = [
   {
@@ -13,9 +13,9 @@ const roomsData = [
         Os principais conceitos incluem componentes funcionais, props, estado e hooks como useState e useEffect.
       `,
     questions: [
-      { question: "O que são componentes no React?", pinned: true },
-      { question: "Qual a diferença entre props e state?", pinned: true },
-      { question: "Quando devo usar useEffect?" },
+      { question: "O que são componentes no React?", pinned: true, userId: "user-2" },
+      { question: "Qual a diferença entre props e state?", pinned: true, userId: "user-2" },
+      { question: "Quando devo usar useEffect?", userId: "user-3" },
       { question: "React é um framework ou biblioteca?" }
     ]
   },
@@ -29,8 +29,8 @@ const roomsData = [
         baixo acoplamento e responsabilidade única.
       `,
     questions: [
-      { question: "O que caracteriza um código limpo?", pinned: true },
-      { question: "Por que nomes de variáveis são tão importantes?" },
+      { question: "O que caracteriza um código limpo?", pinned: true, userId: "user-4" },
+      { question: "Por que nomes de variáveis são tão importantes?", userId: "user-5" },
       { question: "Funções grandes são sempre um problema?" }
     ]
   },
@@ -43,9 +43,9 @@ const roomsData = [
         Containers são ambientes isolados que garantem consistência entre desenvolvimento e produção.
       `,
     questions: [
-      { question: "O que é um container?", pinned: true },
-      { question: "Qual a diferença entre container e máquina virtual?" },
-      { question: "Por que usar Docker em produção?" }
+      { question: "O que é um container?", pinned: true, userId: "user-1" },
+      { question: "Qual a diferença entre container e máquina virtual?", userId: "user-5" },
+      { question: "Por que usar Docker em produção?", userId: "user-5" }
     ]
   },
   {
@@ -57,9 +57,9 @@ const roomsData = [
         Utilizam SQL como linguagem de consulta e garantem integridade através de chaves primárias e estrangeiras.
       `,
     questions: [
-      { question: "O que é uma chave primária?", pinned: true },
-      { question: "Quando usar chave estrangeira?" },
-      { question: "O que é normalização?" }
+      { question: "O que é uma chave primária?", pinned: true, userId: "user-3" },
+      { question: "Quando usar chave estrangeira?", userId: "user-1" },
+      { question: "O que é normalização?", userId: "user-2" }
     ]
   },
   {
@@ -73,8 +73,8 @@ const roomsData = [
       `,
     questions: [
       { question: "Qual a diferença entre PUT e PATCH?", pinned: true },
-      { question: "O que significa uma API ser stateless?" },
-      { question: "Quando usar status HTTP 201?" }
+      { question: "O que significa uma API ser stateless?", userId: "user-4" },
+      { question: "Quando usar status HTTP 201?", userId: "user-2" }
     ]
   },
   {
@@ -87,8 +87,12 @@ const roomsData = [
         Inclui aprendizado de máquina, processamento de linguagem natural e visão computacional.
       `,
     questions: [
-      { question: "O que diferencia IA de algoritmos tradicionais?", pinned: true },
-      { question: "O que é machine learning?" }
+      {
+        question: "O que diferencia IA de algoritmos tradicionais?",
+        pinned: true,
+        userId: "user-2"
+      },
+      { question: "O que é machine learning?", userId: "user-3" }
     ]
   },
   {
@@ -100,8 +104,8 @@ const roomsData = [
         Ele permite acompanhar mudanças no código, trabalhar em equipe e manter histórico de alterações.
       `,
     questions: [
-      { question: "Qual a diferença entre commit e push?", pinned: true },
-      { question: "Para que servem branches?" }
+      { question: "Qual a diferença entre commit e push?", pinned: true, userId: "user-5" },
+      { question: "Para que servem branches?", userId: "user-3" }
     ]
   },
   {
@@ -114,8 +118,8 @@ const roomsData = [
         SSR melhora SEO e tempo de carregamento inicial.
       `,
     questions: [
-      { question: "O que é SSR no Next.js?", pinned: true },
-      { question: "Quando usar SSG em vez de SSR?" }
+      { question: "O que é SSR no Next.js?", pinned: true, userId: "user-1" },
+      { question: "Quando usar SSG em vez de SSR?", userId: "user-5" }
     ]
   },
   {
@@ -128,8 +132,8 @@ const roomsData = [
         Uma boa arquitetura facilita manutenção e escalabilidade.
       `,
     questions: [
-      { question: "Por que separar camadas no backend?", pinned: true },
-      { question: "Qual a importância da validação de dados?" },
+      { question: "Por que separar camadas no backend?", pinned: true, userId: "user-2" },
+      { question: "Qual a importância da validação de dados?", userId: "user-3" },
       { question: "Como lidar com erros de forma consistente?" }
     ]
   }
@@ -196,29 +200,32 @@ async function main() {
     })
   ])
 
-  for (const data of roomsData) {
-    const room = await prisma.room.create({
-      data: {
-        name: data.name,
-        description: data.description,
-        visibility: Visibility.PUBLIC,
-        userId: data.userId
-      }
-    })
+  for (const { chunk, questions, ...rest } of roomsData) {
+    console.log("Criando sala: ", rest.name)
+    const room = await prisma.room.create({ data: rest })
 
-    await prisma.roomChunk.create({
-      data: {
+    const embeddings = await generateEmbbedings(chunk.trim())
+
+    await createRoomChunk(room.id, chunk.trim(), embeddings)
+
+    const questionsData = []
+
+    for (const { question, ...rest } of questions) {
+      console.log("Criando pergunta: ", question)
+      const embedding = await generateEmbbedings(question)
+      const similarTranscriptions = await getSimilarTranscriptions(embedding, room.id)
+      const answer = await generateAnswer(question, similarTranscriptions)
+
+      questionsData.push({
+        question,
+        answer,
         roomId: room.id,
-        transcription: data.chunk.trim()
-      }
-    })
+        ...rest
+      })
+    }
 
     await prisma.question.createMany({
-      data: data.questions.map((q) => ({
-        roomId: room.id,
-        question: q.question,
-        pinned: q.pinned ?? false
-      }))
+      data: questionsData
     })
   }
 
