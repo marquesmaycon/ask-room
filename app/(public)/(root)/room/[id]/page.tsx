@@ -13,7 +13,7 @@ export default async function RoomRoutePage({ params }: RoomRoutePageProps) {
 
   const queryClient = getQueryClient()
 
-  queryClient.prefetchQuery(roomQueryOptions({ param: { id } }))
+  await queryClient.prefetchQuery(roomQueryOptions({ param: { id } }))
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

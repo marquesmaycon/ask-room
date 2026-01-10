@@ -53,7 +53,7 @@
   --popover-foreground: oklch(0.129 0.042 264.695);
   --primary: var(--color-violet-900);
   --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: #B486AB;
+  --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
   --muted-foreground: oklch(0.554 0.046 257.417);
@@ -116,7 +116,17 @@
   * {
     @apply border-border outline-ring/50;
   }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) transparent;
+  }
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  body[data-scroll-locked="1"] {
+    margin-right: 0 !important;
   }
 }

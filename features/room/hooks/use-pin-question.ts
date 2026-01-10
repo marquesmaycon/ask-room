@@ -23,9 +23,11 @@ export const usePinQuestion = () => {
         const { message } = await res.json()
         throw new Error(message)
       }
+
+      return res.json()
     },
-    onSuccess: (_, { roomId }) => {
-      toast.success("Pergunta fixada com sucesso.")
+    onSuccess: ({ question }, { roomId }) => {
+      toast.success(`Pergunta ${question.pinned ? "fixada" : "desfixada"} com sucesso.`)
       queryClient.invalidateQueries(roomQueryOptions({ param: { id: roomId } }))
     },
     onError: (err) => {

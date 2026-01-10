@@ -14,7 +14,7 @@ export const myRoomsQueryOptions = (headers?: ReadonlyHeaders) =>
         }
       )
       const { rooms } = await res.json()
-      return rooms
+      return rooms || []
     }
   })
 

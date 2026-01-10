@@ -28,7 +28,7 @@ export const FeedRoomContext = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="sm">
+        <Button size="lg">
           Alimentar IA com Texto <TextSelect />
         </Button>
       </PopoverTrigger>

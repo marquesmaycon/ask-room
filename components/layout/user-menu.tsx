@@ -1,5 +1,6 @@
 "use client"
 
+import { useQueryClient } from "@tanstack/react-query"
 import type { User } from "better-auth"
 import { LayoutDashboard, LogOut } from "lucide-react"
 import Link from "next/link"
@@ -23,6 +24,13 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
+  const queryClient = useQueryClient()
+
+  function handleLogout() {
+    queryClient.clear()
+    signOut()
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -47,7 +55,7 @@ export function UserMenu({ user }: UserMenuProps) {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut /> Sair
         </DropdownMenuItem>
       </DropdownMenuContent>

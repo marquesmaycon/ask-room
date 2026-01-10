@@ -1,5 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
-import { ArrowRight, Brain, DoorClosed, Info } from "lucide-react"
+import { ArrowRight, Info } from "lucide-react"
 import { headers } from "next/headers"
 import Link from "next/link"
 

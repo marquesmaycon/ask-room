@@ -14,7 +14,7 @@ export default async function DashboardPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div>
+      <div className="space-y-8">
         <div className="flex items-center justify-between">
           <h1 className="font-sans text-3xl font-bold">Minhas salas</h1>
           <Button asChild>
