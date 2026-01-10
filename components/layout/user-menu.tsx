@@ -6,6 +6,7 @@ import { LayoutDashboard, LogOut } from "lucide-react"
 import Link from "next/link"
 
 import { signOut } from "@/features/auth/actions"
+import { authClient } from "@/lib/auth-client"
 import { extractInitials } from "@/lib/utils"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
@@ -25,10 +26,12 @@ interface UserMenuProps {
 
 export function UserMenu({ user }: UserMenuProps) {
   const queryClient = useQueryClient()
+  const { refetch } = authClient.useSession()
 
-  function handleLogout() {
+  async function handleLogout() {
     queryClient.clear()
-    signOut()
+    await signOut()
+    await refetch()
   }
 
   return (

@@ -1,9 +1,10 @@
 "use client"
 
-import { BadgeQuestionMark, Brain, Pin } from "lucide-react"
+import { BadgeQuestionMark, Brain, MessageCircleQuestionMark, Pin } from "lucide-react"
 import { useParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item"
 import { Toggle } from "@/components/ui/toggle"
 
@@ -26,19 +27,48 @@ export function RoomDetails() {
         <h3 className="mb-4 flex items-center gap-2 font-sans text-xl">
           <Brain /> Inteligência
         </h3>
-        <div className="space-y-4 rounded-md bg-slate-950 p-4">
+        <div className="bg-background space-y-4 rounded-md p-4">
           <div className="flex items-center justify-evenly py-6">
             <FeedRoomContext />
             <RecordRoomAudio />
           </div>
-          <div>
-            <pre>
-              {JSON.stringify(
-                room?.roomChunks?.map((c) => c.transcription),
-                null,
-                2
-              )}
-            </pre>
+          <div className="space-y-4">
+            <h4 className="font-sans font-semibold">Transcrições</h4>
+            <ul className="space-y-4">
+              {room?.roomChunks?.map(({ id, transcription, updatedAt }) => (
+                <li key={id}>
+                  <Item variant="muted">
+                    <ItemContent className="font-mono">{transcription}</ItemContent>
+                    <ItemDescription>
+                      Atualizado em{" "}
+                      {new Date(updatedAt).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
+                    </ItemDescription>
+                    <ItemActions>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigator.clipboard.writeText(transcription)}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => navigator.clipboard.writeText(transcription)}
+                      >
+                        Excluir
+                      </Button>
+                    </ItemActions>
+                  </Item>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
@@ -47,7 +77,7 @@ export function RoomDetails() {
         <h3 className="mb-4 flex items-center gap-2 font-sans text-xl">
           <BadgeQuestionMark /> Perguntas e Respostas
         </h3>
-        <div className="space-y-4 rounded-md bg-slate-950 p-4">
+        <div className="bg-background space-y-4 rounded-md p-4">
           <ul className="space-y-4">
             {room?.questions?.map(({ id, question, answer, pinned }) => (
               <li key={id}>
@@ -66,13 +96,12 @@ export function RoomDetails() {
                       onClick={() => pinQuestion({ param: { id }, roomId })}
                     >
                       <Pin />
-                      <span className="hidden group-data-[state=on]:inline">Fixar</span>
-                      <span className="hidden group-data-[state=off]:inline">Desfixar</span>
+                      <span className="hidden group-data-[state=on]:inline">Desfixar</span>
+                      <span className="hidden group-data-[state=off]:inline">Fixar</span>
                     </Toggle>
                     <Button
-                      variant="secondary"
+                      variant="destructive"
                       size="sm"
-                      className="hover:bg-red-400"
                       onClick={() => deleteQuestion({ param: { id }, roomId })}
                     >
                       Excluir
@@ -81,7 +110,16 @@ export function RoomDetails() {
                 </Item>
               </li>
             ))}
-            {/* TO DO => criar empty state */}
+            {room?.questions.length === 0 && (
+              <Empty>
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <MessageCircleQuestionMark />
+                  </EmptyMedia>
+                  <EmptyTitle>Nenhuma pergunta ainda</EmptyTitle>
+                </EmptyHeader>
+              </Empty>
+            )}
           </ul>
         </div>
       </div>
