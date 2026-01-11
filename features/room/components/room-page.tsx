@@ -69,7 +69,7 @@ export function RoomPage() {
                       <p className="text-muted-foreground">{answer}</p>
                     </div>
                     <small className="text-muted-foreground">
-                      autor: <i>{user?.name || "anônimo"}</i>
+                      autor da pergunta: <i>{user?.name || "anônimo"}</i>
                     </small>
                   </ItemContent>
                 </ItemContent>

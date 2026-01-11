@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Info } from "lucide-react"
+import { ArrowRight, FingerprintPattern } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -16,8 +16,8 @@ export function RoomConfig({ id }: { id: string }) {
   return (
     <div className="space-y-12">
       <div className="flex items-center justify-between">
-        <h1 className="font-sans text-2xl">
-          Configurar: <span className="font-bold">{room?.name}</span>
+        <h1 className="text-foreground font-sans text-2xl">
+          Configurar: <span className="text-primary font-bold">{room?.name}</span>
         </h1>
 
         <Button asChild variant="link">
@@ -29,8 +29,8 @@ export function RoomConfig({ id }: { id: string }) {
       </div>
 
       <div>
-        <h3 className="mb-4 flex items-center gap-2 font-sans text-xl">
-          <Info /> Identificação
+        <h3 className="text-primary decoration-primary mb-4 flex items-center gap-2 font-sans text-xl font-bold underline decoration-dotted decoration-3 underline-offset-2">
+          <FingerprintPattern /> Identificação
         </h3>
         <RoomForm type="edit" />
       </div>

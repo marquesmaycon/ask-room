@@ -33,7 +33,7 @@ export function RoomChunks({ roomId }: { roomId: string }) {
   }
   return (
     <div>
-      <h3 className="mb-4 flex items-center gap-2 font-sans text-xl">
+      <h3 className="text-primary decoration-primary mb-4 flex items-center gap-2 font-sans text-xl font-bold underline decoration-dotted decoration-3 underline-offset-2">
         <Brain /> Inteligência
       </h3>
       <div className="bg-background space-y-4 rounded-md p-4">

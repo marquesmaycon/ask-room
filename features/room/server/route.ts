@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { authMiddleware, sessionMiddleware } from "@/lib/session-middleware"
 import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
 
-import { createRoomChunk, updateRoomChunk } from "../room-service"
+import { createRoomChunk, getSimilarTranscriptions, updateRoomChunk } from "../room-service"
 import { questionSchema, roomSchema } from "../schemas"
 
 const roomIdParamValidator = zValidator("param", z.object({ id: z.string() }))
@@ -143,26 +143,7 @@ const roomsController = new Hono()
     const user = c.get("user")
 
     const embeddings = await generateEmbbedings(question)
-    const embeddingsString = `[${embeddings.join(",")}]`
-
-    type Chunk = {
-      id: string
-      transcription: string
-      similarity: number
-    }
-
-    const chunks = await prisma.$queryRaw<Chunk[]>`
-        SELECT 
-          id,
-          transcription,
-          1 - (embeddings <=> ${embeddingsString}::vector) as similarity
-        FROM room_chunks
-        WHERE "roomId" = ${roomId}
-          AND 1 - (embeddings <=> ${embeddingsString}::vector) > 0.7
-        ORDER BY embeddings <=> ${embeddingsString}::vector
-        LIMIT 5
-      `
-    const transcriptions = chunks.map((chunk) => chunk.transcription)
+    const transcriptions = await getSimilarTranscriptions(embeddings, roomId)
 
     const answer = await generateAnswer(question, transcriptions)
 
