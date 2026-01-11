@@ -43,11 +43,8 @@ export function RoomChunks({ roomId }: { roomId: string }) {
           <ul className="space-y-4">
             {room?.roomChunks?.map(({ id, transcription, updatedAt }) => (
               <li key={id}>
-                <Item
-                  variant="muted"
-                  className="flex-col items-end lg:flex-row lg:items-end lg:gap-8"
-                >
-                  <ItemContent className="self-start text-start">{transcription}</ItemContent>
+                <Item variant="muted" className="flex-col items-start">
+                  <ItemContent>{transcription}</ItemContent>
                   <div className="flex w-full items-center justify-between gap-4">
                     <ItemDescription className="text-xs">
                       {new Date(updatedAt).toLocaleDateString("pt-BR", {

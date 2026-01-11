@@ -46,7 +46,8 @@ const roomsController = new Hono()
       where: { id },
       include: {
         questions: {
-          orderBy: [{ pinned: "desc" }, { createdAt: "asc" }]
+          orderBy: [{ pinned: "desc" }, { createdAt: "asc" }],
+          include: { user: { select: { name: true } } }
         },
         invites: true,
         roomChunks: true
@@ -114,7 +115,6 @@ const roomsController = new Hono()
       data
     })
 
-    // TO DO => EVITAR DUPLICIDADES
     if (invites && invites.length > 0) {
       await prisma.invite.createMany({
         data: invites.map(({ email }) => ({

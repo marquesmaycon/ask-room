@@ -37,14 +37,15 @@ export function RoomQuestions({ roomId }: { roomId: string }) {
       </h3>
       <div className="bg-background space-y-4 rounded-md p-4">
         <ul className="space-y-4">
-          {room?.questions?.map(({ id, question, answer, pinned }) => (
+          {room?.questions?.map(({ id, question, answer, pinned, user }) => (
             <li key={id}>
-              <Item variant="outline" className="bg-background">
+              <Item variant="outline" className="bg-background flex-col items-start">
                 <ItemContent>
                   <ItemTitle>{question}</ItemTitle>
-                  <ItemDescription>{answer}</ItemDescription>
+                  <ItemDescription>autor: {user?.name}</ItemDescription>
                 </ItemContent>
-                <ItemActions>
+                <ItemContent>{answer}</ItemContent>
+                <ItemActions className="self-end">
                   <Toggle
                     aria-label="Fixar Pergunta"
                     size="sm"

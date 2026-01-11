@@ -66,7 +66,10 @@ export function RoomPage() {
                   <ItemContent className="pt-4">
                     <div className="mb-2 flex items-center gap-2">
                       <BrainCircuit className="shrink-0" />{" "}
-                      <p className="text-muted-foreground">{answer}</p>
+                      <p className="text-muted-foreground">
+                        {answer ||
+                          "Não foi possivel encontrar encontrar uma resposta para essa pergunta."}
+                      </p>
                     </div>
                     <small className="text-muted-foreground">
                       autor da pergunta: <i>{user?.name || "anônimo"}</i>
