@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import type { InferRequestType } from "hono"
 import { toast } from "sonner"
 
@@ -11,7 +11,6 @@ const createRoomChunkRequest = client.api.rooms[":id"].chunks.$post
 type RequestType = InferRequestType<typeof createRoomChunkRequest>
 
 export const useCreateRoomChunk = () => {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param, json }: RequestType) => {
       const res = await createRoomChunkRequest({ param, json })
@@ -24,9 +23,9 @@ export const useCreateRoomChunk = () => {
       const { chunk } = await res.json()
       return chunk
     },
-    onSuccess: (_, { param: { id } }) => {
+    onSuccess: (_, { param: { id } }, __, { client }) => {
       toast.success("Texto enviado com sucesso.")
-      queryClient.invalidateQueries(roomQueryOptions({ param: { id } }))
+      client.invalidateQueries(roomQueryOptions({ param: { id } }))
     },
     onError: (err) => {
       toast.error("Ocorreu um erro ao enviar o texto.", { description: err.message })

@@ -1,17 +1,16 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import type { InferRequestType } from "hono"
 import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomQueryOptions } from "./use-room"
+import { roomDetailsQueryOptions } from "./use-room-details"
 
 const uploadRoomAudioRequest = client.api.rooms[":id"].audio.$post
 
 type RequestType = InferRequestType<typeof uploadRoomAudioRequest>
 
 export const useUploadRoomAudio = () => {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param, form }: RequestType) => {
       const res = await uploadRoomAudioRequest({ param, form })
@@ -24,12 +23,14 @@ export const useUploadRoomAudio = () => {
       const { chunk } = await res.json()
       return chunk
     },
-    onSuccess: (_, { param: { id } }) => {
+    onSuccess: () => {
       toast.success("Áudio enviado com sucesso.")
-      queryClient.invalidateQueries(roomQueryOptions({ param: { id } }))
     },
     onError: (err) => {
       toast.error("Ocorreu um erro ao enviar o áudio.", { description: err.message })
+    },
+    onSettled: (_, __, { param: { id } }, ___, { client }) => {
+      client.invalidateQueries(roomDetailsQueryOptions({ param: { id } }))
     }
   })
 }

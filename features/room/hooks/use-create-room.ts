@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import type { InferRequestType } from "hono"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -13,7 +13,6 @@ const createRoomRequest = client.api.rooms.$post
 type RequestType = InferRequestType<typeof createRoomRequest>
 
 export const useCreateRoom = () => {
-  const queryClient = useQueryClient()
   const navigate = useRouter()
   return useMutation({
     mutationFn: async ({ json }: RequestType) => {
@@ -22,10 +21,10 @@ export const useCreateRoom = () => {
       const { room } = await res.json()
       return room
     },
-    onSuccess: (room) => {
+    onSuccess: (room, __, ___, { client }) => {
       toast.success("Room created successfully")
-      queryClient.invalidateQueries(roomsQueryOptions)
-      queryClient.invalidateQueries(myRoomsQueryOptions())
+      client.invalidateQueries(roomsQueryOptions)
+      client.invalidateQueries(myRoomsQueryOptions())
       navigate.push(`/room/${room.id}`)
     },
     onError: (err) => {

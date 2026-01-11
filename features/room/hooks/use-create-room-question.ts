@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import type { InferRequestType } from "hono"
 import { toast } from "sonner"
 
@@ -11,7 +11,6 @@ const createRoomQuestionRequest = client.api.rooms[":id"].questions.$post
 type RequestType = InferRequestType<typeof createRoomQuestionRequest>
 
 export const useCreateRoomQuestion = () => {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param, json }: RequestType) => {
       const res = await createRoomQuestionRequest({ param, json })
@@ -24,9 +23,9 @@ export const useCreateRoomQuestion = () => {
       const { question } = await res.json()
       return question
     },
-    onSuccess: (_, { param: { id } }) => {
+    onSuccess: (_, { param: { id } }, __, { client }) => {
       toast.success("Pergunta criada com sucesso.")
-      queryClient.invalidateQueries(roomQueryOptions({ param: { id } }))
+      client.invalidateQueries(roomQueryOptions({ param: { id } }))
     },
     onError: (err) => {
       toast.error(`Ocorreu um erro ao criar a pergunta`, { description: err.message })

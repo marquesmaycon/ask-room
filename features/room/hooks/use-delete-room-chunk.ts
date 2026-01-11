@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import type { InferRequestType } from "hono"
 import { toast } from "sonner"
 
@@ -13,7 +13,6 @@ type DeleteRoomChunkArgs = InferRequestType<typeof deleteRoomChunkRequest> & {
 }
 
 export const useDeleteRoomChunk = () => {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param }: DeleteRoomChunkArgs) => {
       const res = await deleteRoomChunkRequest({ param })
@@ -23,12 +22,34 @@ export const useDeleteRoomChunk = () => {
         throw new Error(message)
       }
     },
-    onSuccess: (_, { roomId }) => {
-      toast.success("Contexto deletado com sucesso.")
-      queryClient.invalidateQueries(roomDetailsQueryOptions({ param: { id: roomId } }))
+    onMutate: async ({ roomId, param }, { client }) => {
+      const opts = roomDetailsQueryOptions({ param: { id: roomId } })
+
+      await client.cancelQueries(opts)
+      const previousData = client.getQueryData(opts.queryKey)
+
+      client.setQueryData(opts.queryKey, (oldData) => {
+        if (!oldData) return oldData
+        return {
+          ...oldData,
+          room: {
+            ...oldData,
+            roomChunks: oldData.roomChunks.filter((chunk) => chunk.id !== param.id)
+          }
+        }
+      })
+
+      return { previousData }
     },
-    onError: (err) => {
+    onSuccess: () => {
+      toast.success("Contexto deletado com sucesso.")
+    },
+    onError: (err, { roomId: id }, res, { client }) => {
+      client.setQueryData(roomDetailsQueryOptions({ param: { id } }).queryKey, res?.previousData)
       toast.error("Ocorreu um erro ao deletar o contexto.", { description: err.message })
+    },
+    onSettled: (_, __, { roomId }, ___, { client }) => {
+      client.invalidateQueries(roomDetailsQueryOptions({ param: { id: roomId } }))
     }
   })
 }

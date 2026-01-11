@@ -2,7 +2,6 @@ import { queryOptions, useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
 
-// TO DO => mudar para public rooms
 export const roomsQueryOptions = queryOptions({
   queryKey: ["rooms"],
   queryFn: async () => {

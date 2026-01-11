@@ -14,7 +14,6 @@ type PinQuestionArgs = RequestType & {
 }
 
 export const usePinQuestion = () => {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param }: PinQuestionArgs) => {
       const res = await pinQuestionRequest({ param })
@@ -26,12 +25,14 @@ export const usePinQuestion = () => {
 
       return res.json()
     },
-    onSuccess: ({ question }, { roomId }) => {
+    onSuccess: ({ question }) => {
       toast.success(`Pergunta ${question.pinned ? "fixada" : "desfixada"} com sucesso.`)
-      queryClient.invalidateQueries(roomQueryOptions({ param: { id: roomId } }))
     },
     onError: (err) => {
       toast.error("Ocorreu um erro ao fixar a pergunta.", { description: err.message })
+    },
+    onSettled: (_, __, { roomId }, ___, { client }) => {
+      client.invalidateQueries(roomQueryOptions({ param: { id: roomId } }))
     }
   })
 }

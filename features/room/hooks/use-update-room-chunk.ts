@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import type { InferRequestType } from "hono"
 import { toast } from "sonner"
 
@@ -11,7 +11,6 @@ const updateRoomChunkRequest = client.api.rooms.chunks[":id"].$put
 type RequestType = InferRequestType<typeof updateRoomChunkRequest>
 
 export const useUpdateRoomChunk = () => {
-  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param, json }: RequestType) => {
       const res = await updateRoomChunkRequest({ param, json })
@@ -24,9 +23,9 @@ export const useUpdateRoomChunk = () => {
       const { chunk } = await res.json()
       return chunk
     },
-    onSuccess: ({ roomId }) => {
+    onSuccess: ({ roomId }, _, __, { client }) => {
       toast.success("Texto atualizado com sucesso.")
-      queryClient.invalidateQueries(roomDetailsQueryOptions({ param: { id: roomId } }))
+      client.invalidateQueries(roomDetailsQueryOptions({ param: { id: roomId } }))
     },
     onError: (err) => {
       toast.error("Ocorreu um erro ao atualizar o texto.", { description: err.message })
