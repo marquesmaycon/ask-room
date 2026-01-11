@@ -218,6 +218,30 @@ const roomsController = new Hono()
       }
     }
   )
+  .delete(
+    "chunks/:id",
+    authMiddleware,
+    zValidator("param", z.object({ id: z.string() })),
+    async (c) => {
+      const { id } = c.req.valid("param")
+      const user = c.get("user")
+
+      const chunk = await prisma.roomChunk.findUniqueOrThrow({
+        where: { id },
+        include: { room: { select: { userId: true } } }
+      })
+
+      if (user?.id !== chunk.room.userId) {
+        return c.json({ message: "Unauthorized" }, 401)
+      }
+
+      await prisma.roomChunk.deleteMany({
+        where: { id: chunk.id }
+      })
+
+      return c.body(null, 204)
+    }
+  )
   .post(
     "/:id/audio",
     roomIdParamValidator,

@@ -14,7 +14,7 @@ type RoomDetailsArgs = RequestType & {
 
 export const roomDetailsQueryOptions = ({ param, headers }: RoomDetailsArgs) =>
   queryOptions({
-    queryKey: ["rooms", param.id],
+    queryKey: ["rooms", param.id, "details"],
     queryFn: async () => {
       const res = await getRoomDetailsRequest(
         { param },

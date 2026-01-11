@@ -60,7 +60,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
       <ResponsiveModal open={Boolean(state?.state)} onOpenChange={close}>
         <div className="p-6">
           <DialogTitle className="text-[22px] font-bold">
-            {state?.payload.title ?? "Confirmar"}
+            {state?.payload.title ?? "Confirmação"}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground pt-2 text-sm">
             {state?.payload.description ?? "Tem certeza que deseja continuar?"}

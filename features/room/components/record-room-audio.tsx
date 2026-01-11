@@ -92,7 +92,7 @@ export function RecordRoomAudio() {
     return null
   }
 
-  const Icon = isRecording ? <CircleStop /> : <PlayCircle />
+  const Icon = isRecording ? <CircleStop /> : <PlayCircle className="text-red-500" />
 
   return (
     <Button size="lg" onClick={toggleRecording} variant={isRecording ? "destructive" : "default"}>

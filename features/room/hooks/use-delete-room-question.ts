@@ -8,8 +8,7 @@ import { roomQueryOptions } from "./use-room"
 
 const deleteRoomQuestionRequest = client.api.rooms.questions[":id"].$delete
 
-type RequestType = InferRequestType<typeof deleteRoomQuestionRequest>
-type DeleteRoomQuestionArgs = RequestType & {
+type DeleteRoomQuestionArgs = InferRequestType<typeof deleteRoomQuestionRequest> & {
   roomId: string
 }
 

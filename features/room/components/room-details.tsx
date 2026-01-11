@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item"
 import { Toggle } from "@/components/ui/toggle"
+import { useConfirm } from "@/hooks/use-confirm"
 
+import { useDeleteRoomChunk } from "../hooks/use-delete-room-chunk"
 import { useDeleteRoomQuestion } from "../hooks/use-delete-room-question"
 import { usePinQuestion } from "../hooks/use-pin-question"
 import { useRoomDetails } from "../hooks/use-room-details"
@@ -18,8 +20,42 @@ export function RoomDetails() {
   const { id: roomId } = useParams<{ id: string }>()
 
   const { data: room } = useRoomDetails({ param: { id: roomId } })
-  const { mutateAsync: deleteQuestion } = useDeleteRoomQuestion()
+
+  const {
+    mutateAsync: deleteQuestion,
+    isPending: isDeletingQuestion,
+    variables: questionVars
+  } = useDeleteRoomQuestion()
+
+  const {
+    mutateAsync: deleteChunk,
+    isPending: isDeletingChunk,
+    variables: chunkVars
+  } = useDeleteRoomChunk()
   const { mutateAsync: pinQuestion } = usePinQuestion()
+
+  const confirm = useConfirm()
+
+  async function handleDeleteChunk(chunkId: string, roomId: string) {
+    const ok = await confirm({
+      description:
+        "Tem certeza que deseja excluir esta transcrição? Esta ação não pode ser desfeita.",
+      confirmLabel: "Excluir permanentemente",
+      variant: "destructive"
+    })
+    if (!ok) return
+    await deleteChunk({ param: { id: chunkId }, roomId })
+  }
+
+  async function handleDeleteQuestion(questionId: string, roomId: string) {
+    const ok = await confirm({
+      description: "Tem certeza que deseja excluir esta pergunta? Esta ação não pode ser desfeita.",
+      confirmLabel: "Excluir permanentemente",
+      variant: "destructive"
+    })
+    if (!ok) return
+    await deleteQuestion({ param: { id: questionId }, roomId })
+  }
 
   return (
     <div className="space-y-12">
@@ -28,7 +64,7 @@ export function RoomDetails() {
           <Brain /> Inteligência
         </h3>
         <div className="bg-background space-y-4 rounded-md p-4">
-          <div className="flex items-center justify-evenly py-6">
+          <div className="flex flex-wrap items-center justify-evenly gap-4 py-6">
             <FeedRoomContext />
             <RecordRoomAudio />
           </div>
@@ -37,9 +73,9 @@ export function RoomDetails() {
             <ul className="space-y-4">
               {room?.roomChunks?.map(({ id, transcription, updatedAt }) => (
                 <li key={id}>
-                  <Item variant="muted">
-                    <ItemContent className="font-mono">{transcription}</ItemContent>
-                    <ItemDescription>
+                  <Item variant="muted" className="flex-col items-end md:flex-row md:items-center">
+                    <ItemContent className="font-mono text-balance">{transcription}</ItemContent>
+                    <ItemDescription className="text-xs">
                       Atualizado em{" "}
                       {new Date(updatedAt).toLocaleDateString("pt-BR", {
                         day: "2-digit",
@@ -60,7 +96,8 @@ export function RoomDetails() {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => navigator.clipboard.writeText(transcription)}
+                        onClick={() => handleDeleteChunk(id, roomId)}
+                        loading={isDeletingChunk && chunkVars?.param.id === id}
                       >
                         Excluir
                       </Button>
@@ -102,7 +139,8 @@ export function RoomDetails() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => deleteQuestion({ param: { id }, roomId })}
+                      onClick={() => handleDeleteQuestion(id, roomId)}
+                      loading={isDeletingQuestion && questionVars?.param.id === id}
                     >
                       Excluir
                     </Button>
