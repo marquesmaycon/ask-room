@@ -1,19 +1,22 @@
 "use client"
 
+import { TextSelect } from "lucide-react"
 import { CircleStop, PlayCircle } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 import { useUploadRoomAudio } from "../hooks/use-upload-room-audio"
+import { RoomChunkForm } from "./room-chunk-form"
 
 const isRecordingSupported =
   !!navigator.mediaDevices &&
   typeof navigator.mediaDevices.getUserMedia === "function" &&
   typeof window.MediaRecorder === "function"
 
-export function RecordRoomAudio() {
+export function FeedRoom() {
   const { id: roomId } = useParams<{ id: string }>()
 
   const [isRecording, setIsRecording] = useState(false)
@@ -95,8 +98,21 @@ export function RecordRoomAudio() {
   const Icon = isRecording ? <CircleStop /> : <PlayCircle className="text-red-500" />
 
   return (
-    <Button size="lg" onClick={toggleRecording} variant={isRecording ? "destructive" : "default"}>
-      {isRecording ? "Parar gravação" : "Gravar Áudio"} {Icon}
-    </Button>
+    <div className="flex flex-wrap items-center justify-evenly gap-4 py-6">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="lg">
+            Alimentar sala com Texto <TextSelect />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <RoomChunkForm roomId={roomId} />
+        </PopoverContent>
+      </Popover>
+
+      <Button size="lg" onClick={toggleRecording} variant={isRecording ? "destructive" : "default"}>
+        {isRecording ? "Parar gravação" : "Gravar Áudio"} {Icon}
+      </Button>
+    </div>
   )
 }

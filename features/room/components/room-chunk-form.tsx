@@ -25,6 +25,7 @@ export function RoomChunkForm({ roomId, chunkId, text }: RoomChunkFormProps) {
     onSubmit: async ({ value }) => {
       if (roomId) {
         await create({ param: { id: roomId }, json: value })
+        form.reset()
       } else if (chunkId) {
         await update({ param: { id: chunkId }, json: value })
       }
@@ -42,7 +43,7 @@ export function RoomChunkForm({ roomId, chunkId, text }: RoomChunkFormProps) {
         <form.AppField name="text">
           {({ TextareaField }) => (
             <TextareaField
-              label="Texto"
+              label="Conteúdo"
               placeholder="essa sala é sobre... os detalhes do do assunto é...."
             />
           )}

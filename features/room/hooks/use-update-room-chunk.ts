@@ -4,7 +4,7 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomQueryOptions } from "./use-room"
+import { roomDetailsQueryOptions } from "./use-room-details"
 
 const updateRoomChunkRequest = client.api.rooms.chunks[":id"].$put
 
@@ -24,9 +24,9 @@ export const useUpdateRoomChunk = () => {
       const { chunk } = await res.json()
       return chunk
     },
-    onSuccess: (_, { param: { id } }) => {
+    onSuccess: ({ roomId }) => {
       toast.success("Texto atualizado com sucesso.")
-      queryClient.invalidateQueries(roomQueryOptions({ param: { id } }))
+      queryClient.invalidateQueries(roomDetailsQueryOptions({ param: { id: roomId } }))
     },
     onError: (err) => {
       toast.error("Ocorreu um erro ao atualizar o texto.", { description: err.message })

@@ -1,5 +1,6 @@
 "use client"
 
+import { PopoverArrow } from "@radix-ui/react-popover"
 import { BadgeQuestionMark, Brain, MessageCircleQuestionMark, Pin } from "lucide-react"
 import { useParams } from "next/navigation"
 
@@ -14,8 +15,7 @@ import { useDeleteRoomChunk } from "../hooks/use-delete-room-chunk"
 import { useDeleteRoomQuestion } from "../hooks/use-delete-room-question"
 import { usePinQuestion } from "../hooks/use-pin-question"
 import { useRoomDetails } from "../hooks/use-room-details"
-import { FeedRoomContext } from "./feed-room-context"
-import { RecordRoomAudio } from "./record-room-audio"
+import { FeedRoom } from "./feed-room"
 import { RoomChunkForm } from "./room-chunk-form"
 
 export function RoomDetails() {
@@ -66,10 +66,7 @@ export function RoomDetails() {
           <Brain /> Inteligência
         </h3>
         <div className="bg-background space-y-4 rounded-md p-4">
-          <div className="flex flex-wrap items-center justify-evenly gap-4 py-6">
-            <FeedRoomContext />
-            <RecordRoomAudio />
-          </div>
+          <FeedRoom />
           <div className="space-y-4">
             <h4 className="font-sans font-semibold">Transcrições</h4>
             <ul className="space-y-4">
@@ -100,6 +97,7 @@ export function RoomDetails() {
                         </PopoverTrigger>
                         <PopoverContent>
                           <RoomChunkForm chunkId={id} text={transcription} />
+                          <PopoverArrow className="fill-border" />
                         </PopoverContent>
                       </Popover>
                       <Button
