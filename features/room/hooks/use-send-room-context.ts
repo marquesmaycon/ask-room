@@ -6,15 +6,15 @@ import { client } from "@/lib/rpc"
 
 import { roomQueryOptions } from "./use-room"
 
-const feedRoomRequest = client.api.rooms[":id"].text.$post
+const sendRoomContextRequest = client.api.rooms[":id"].context.$post
 
-type RequestType = InferRequestType<typeof feedRoomRequest>
-// TO DO => mudar para text
-export const useFeedRoom = () => {
+type RequestType = InferRequestType<typeof sendRoomContextRequest>
+
+export const useSendRoomContext = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param, json }: RequestType) => {
-      const res = await feedRoomRequest({ param, json })
+      const res = await sendRoomContextRequest({ param, json })
 
       if (!res.ok) {
         const { message } = await res.json()

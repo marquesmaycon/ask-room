@@ -188,7 +188,7 @@ const roomsController = new Hono()
     return c.json({ question: newQuestion }, 201)
   })
   .post(
-    "/:id/text",
+    "/:id/context",
     roomIdParamValidator,
     zValidator(
       "json",

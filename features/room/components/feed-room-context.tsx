@@ -8,12 +8,12 @@ import { FieldGroup } from "@/components/ui/field"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useAppForm } from "@/hooks/form"
 
-import { useFeedRoom } from "../hooks/use-feed-room"
+import { useSendRoomContext } from "../hooks/use-send-room-context"
 import { feedRoomSchema } from "../schemas"
 
 export const FeedRoomContext = () => {
   const { id } = useParams<{ id: string }>()
-  const { mutateAsync } = useFeedRoom()
+  const { mutateAsync } = useSendRoomContext()
 
   const form = useAppForm({
     defaultValues: { text: "" },
