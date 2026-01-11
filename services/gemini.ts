@@ -11,7 +11,7 @@ export async function transcribeAudio(audioBase64: string, mimeType: string) {
     model,
     contents: [
       {
-        text: "Transcreva o áudio para portugês do Brasil. Seja preciso e natural, mantenha a pontuação adequada e divida o texto em parágrafos quando for apropriedado"
+        text: "Transcreva o áudio para portugês do Brasil. Seja preciso e natural, mantenha a pontuação adequada e divida o texto em parágrafos quando for apropriado. Se não houver nenhuma fala detectável no áudio, responda apenas com: SEM_FALA"
       },
       {
         inlineData: {
@@ -22,9 +22,12 @@ export async function transcribeAudio(audioBase64: string, mimeType: string) {
     ]
   })
 
-  // TO DO => verificar audios sem fala e lançar erro
   if (!response.text) {
     throw new Error("Failed to transcribe audio")
+  }
+
+  if (response.text.trim() === "SEM_FALA") {
+    throw new Error("Audio does not contain any speech")
   }
 
   return response.text
@@ -49,30 +52,34 @@ export async function generateEmbbedings(text: string) {
   return response.embeddings[0].values
 }
 
-export async function generateAnswer(
-  question: string,
-  transcriptions: string[]
-) {
+const systemPrompt = `Você é um assistente educacional que responde perguntas baseado exclusivamente em conteúdos fornecidos.
+
+REGRAS IMPORTANTES:
+1. Responda APENAS em texto simples, sem qualquer formatação Markdown (sem **, ##, -, etc)
+2. Use apenas informações contidas no conteúdo fornecido
+3. Se a resposta não estiver disponível no conteúdo, responda: "Desculpe, não encontrei informações suficientes para responder essa pergunta no conteúdo disponível"
+4. Mantenha um tom educativo, profissional e acessível
+5. Organize a resposta em parágrafos claros quando necessário
+6. Se for citar o conteúdo, use: "Conforme mencionado no conteúdo da aula..."
+7. Seja objetivo e direto`
+
+export async function generateAnswer(question: string, transcriptions: string[]) {
   if (transcriptions.length === 0) {
     return null
   }
 
   const context = transcriptions.join("\n\n")
 
-  const prompt = `
-    Com base no texto fornecido abaixo como contexto, responsa a pergunta de forma clara e precisa em português do Brasil. 
-    
-    CONTEXTO: ${context}
+  const prompt = `${systemPrompt}
 
-    PERGUNTA: ${question}
+    CONTEÚDO DISPONÍVEL:
+    ${context}
 
-    INSTRUÇÕES:
-    - Use apenas informações contidas no context enviado.
-    - Se a resposta não estiver no contexto, responda que não há informações suficientes para responder a pergunta.
-    - Seja objetivo, mantenha um tom educativo e profissional.
-    - Cite trechos relevantes do contexto na resposta, se necessário.
-    - Se for citar o contexto, utilize o termo "Conteúdo da aula
-  `.trim()
+    PERGUNTA DO USUÁRIO:
+    ${question}
+
+    Responda a pergunta acima:
+  `
 
   const response = await gemini.models.generateContent({
     model,
