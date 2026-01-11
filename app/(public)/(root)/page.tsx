@@ -3,7 +3,7 @@ import { Plus } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
-import { RoomList } from "@/features/room/components/room-list"
+import { RoomList } from "@/features/room/components/rooms-list"
 import { roomsQueryOptions } from "@/features/room/hooks/use-rooms"
 
 export default async function Home() {

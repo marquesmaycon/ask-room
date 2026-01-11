@@ -98,14 +98,14 @@ export function FeedRoom() {
   const Icon = isRecording ? <CircleStop /> : <PlayCircle className="text-red-500" />
 
   return (
-    <div className="flex flex-wrap items-center justify-evenly gap-4 py-6">
+    <div className="bg-primary/5 flex flex-wrap items-center justify-evenly gap-4 rounded-md py-6">
       <Popover>
         <PopoverTrigger asChild>
           <Button size="lg">
             Alimentar sala com Texto <TextSelect />
           </Button>
         </PopoverTrigger>
-        <PopoverContent>
+        <PopoverContent side="bottom">
           <RoomChunkForm roomId={roomId} />
         </PopoverContent>
       </Popover>

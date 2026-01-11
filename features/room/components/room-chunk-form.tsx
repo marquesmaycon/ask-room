@@ -45,6 +45,7 @@ export function RoomChunkForm({ roomId, chunkId, text }: RoomChunkFormProps) {
             <TextareaField
               label="Conteúdo"
               placeholder="essa sala é sobre... os detalhes do do assunto é...."
+              className="max-h-80"
             />
           )}
         </form.AppField>
