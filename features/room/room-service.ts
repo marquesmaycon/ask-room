@@ -20,6 +20,27 @@ export const createRoomChunk = async (
   })
 }
 
+export const updateRoomChunk = async (
+  chunkId: string,
+  transcription: string,
+  embeddings: number[]
+) => {
+  return await prisma.$transaction(async (tx) => {
+    const chunk = await tx.roomChunk.update({
+      where: { id: chunkId },
+      data: { transcription }
+    })
+
+    await tx.$executeRaw`
+      UPDATE room_chunks 
+      SET embeddings = ${JSON.stringify(embeddings)}::vector
+      WHERE id = ${chunk.id}
+    `
+
+    return chunk
+  })
+}
+
 type Chunk = {
   id: string
   transcription: string

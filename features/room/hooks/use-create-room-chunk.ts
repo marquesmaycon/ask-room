@@ -6,15 +6,15 @@ import { client } from "@/lib/rpc"
 
 import { roomQueryOptions } from "./use-room"
 
-const sendRoomContextRequest = client.api.rooms[":id"].context.$post
+const createRoomChunkRequest = client.api.rooms[":id"].chunks.$post
 
-type RequestType = InferRequestType<typeof sendRoomContextRequest>
+type RequestType = InferRequestType<typeof createRoomChunkRequest>
 
-export const useSendRoomContext = () => {
+export const useCreateRoomChunk = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ param, json }: RequestType) => {
-      const res = await sendRoomContextRequest({ param, json })
+      const res = await createRoomChunkRequest({ param, json })
 
       if (!res.ok) {
         const { message } = await res.json()

@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { authMiddleware, sessionMiddleware } from "@/lib/session-middleware"
 import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
 
-import { createRoomChunk } from "../room-service"
+import { createRoomChunk, updateRoomChunk } from "../room-service"
 import { questionSchema, roomSchema } from "../schemas"
 
 const roomIdParamValidator = zValidator("param", z.object({ id: z.string() }))
@@ -188,7 +188,7 @@ const roomsController = new Hono()
     return c.json({ question: newQuestion }, 201)
   })
   .post(
-    "/:id/context",
+    "/:id/chunks",
     roomIdParamValidator,
     zValidator(
       "json",
@@ -240,6 +240,41 @@ const roomsController = new Hono()
       })
 
       return c.body(null, 204)
+    }
+  )
+  .put(
+    "chunks/:id",
+    authMiddleware,
+    zValidator("param", z.object({ id: z.string() })),
+    zValidator("json", z.object({ text: z.string().min(1, "Text is required") })),
+    async (c) => {
+      const { id } = c.req.valid("param")
+      const { text } = c.req.valid("json")
+      const user = c.get("user")
+
+      const chunk = await prisma.roomChunk.findUniqueOrThrow({
+        where: { id },
+        include: { room: { select: { userId: true } } }
+      })
+
+      if (user?.id !== chunk.room.userId) {
+        return c.json({ message: "Unauthorized" }, 401)
+      }
+
+      try {
+        const embeddings = await generateEmbbedings(text)
+        const updatedChunk = await updateRoomChunk(id, text, embeddings)
+
+        return c.json({ chunk: updatedChunk }, 200)
+      } catch (error) {
+        console.error("Chunk update error:", error)
+        return c.json(
+          {
+            message: error instanceof Error ? error.message : "Failed to update chunk"
+          },
+          500
+        )
+      }
     }
   )
   .post(
