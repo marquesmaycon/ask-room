@@ -1,4 +1,3 @@
-import { signUp } from "@/features/auth/actions"
 import { createRoomChunk } from "@/features/room/room-service"
 import { prisma } from "@/lib/prisma"
 import { generateEmbbedings } from "@/services/gemini"
@@ -103,7 +102,23 @@ const roomsData = [
     userId: "user-2",
     chunk: `
         Deméter é a deusa da colheita, agricultura e fertilidade na mitologia grega. Filha de Cronos e Reia, é irmã de Zeus, Hera, Hades e Posídon. Sua principal função era ensinar aos mortais a arte da agricultura, especialmente o cultivo do trigo. O mito mais famoso envolvendo Deméter é o rapto de sua filha Perséfone por Hades. Durante a busca desesperada pela filha, Deméter fez a terra tornar-se estéril, causando uma grande fome. O acordo final estabeleceu que Perséfone passaria parte do ano no submundo com Hades e parte na superfície com a mãe, criando assim as estações do ano. Deméter é representada tendo em uma das mãos uma foice e na outra espigas e papoulas, trazendo na cabeça uma coroa com esses mesmos elementos.
-      `
+      `,
+    questions: [
+      {
+        question: "Como o mito de Perséfone explica as estações do ano?",
+        answer:
+          "O acordo estabeleceu que Perséfone passaria parte do ano no submundo com Hades e parte na superfície com a mãe Deméter, criando assim as estações do ano. Quando Perséfone está no submundo, Deméter deixa a terra estéril (inverno), e quando retorna, a vida floresce (primavera/verão).",
+        pinned: false,
+        userId: "user-4"
+      },
+      {
+        question: "Qual era a principal função de Deméter?",
+        answer:
+          "A principal função de Deméter era ensinar aos mortais a arte da agricultura, especialmente o cultivo do trigo. Ela era responsável pela fertilidade da terra e pela colheita.",
+        pinned: false,
+        userId: "user-5"
+      }
+    ]
   },
   {
     name: "Atena - Deusa da Sabedoria",
@@ -111,7 +126,30 @@ const roomsData = [
     userId: "user-3",
     chunk: `
         Atena é a deusa da sabedoria, estratégia em batalha, artes, justiça e habilidade na mitologia grega. Filha partenogênica de Zeus, nasceu da cabeça de seu pai já adulta e completamente armada. Jamais se casou ou tomou amantes, mantendo uma virgindade perpétua. Era imbatível na guerra, superando até mesmo Ares em habilidade estratégica. Atena tornou-se mais conhecida como a protetora de Atenas, cidade que leva seu nome após vencer uma disputa com Posídon ao oferecer a oliveira aos atenienses. Seus símbolos incluem a coruja, a oliveira, a serpente e a égide (escudo). Representada sempre vestindo armadura e capacete, Atena personifica a sabedoria combinada com a força, sendo conselheira de heróis e patrona das artes e ofícios.
-      `
+      `,
+    questions: [
+      {
+        question: "Como Atena nasceu e o que isso tem de especial?",
+        answer:
+          "Atena é filha partenogênica de Zeus, tendo nascido da cabeça de seu pai já adulta e completamente armada. Esse nascimento incomum reforça sua natureza excepcional como deusa da sabedoria.",
+        pinned: false,
+        userId: "user-1"
+      },
+      {
+        question: "Por que a cidade de Atenas leva o nome de Atena?",
+        answer:
+          "Atenas leva o nome de Atena após ela vencer uma disputa com Posídon ao oferecer a oliveira aos atenienses. Isso a tornou a protetora da cidade.",
+        pinned: true,
+        userId: "user-4"
+      },
+      {
+        question: "Como Atena se diferencia de Ares na guerra?",
+        answer:
+          "Enquanto Ares representa a violência e brutalidade da guerra, Atena era imbatível na guerra por sua habilidade estratégica, superando até mesmo Ares. Ela personifica a sabedoria combinada com a força.",
+        pinned: false,
+        userId: "user-5"
+      }
+    ]
   },
   {
     name: "Apolo - Deus da Luz",
@@ -119,7 +157,16 @@ const roomsData = [
     userId: "user-3",
     chunk: `
         Apolo é uma das divindades principais da mitologia greco-romana, um dos deuses olímpicos. Filho de Zeus e Leto, e irmão gêmeo de Ártemis, Apolo nasceu na ilha de Delos. Era descrito como o deus da divina distância, identificado com o Sol e a Luz da Verdade. Suas funções e atributos eram diversos: deus da música, da profecia, da medicina, do arco e flecha, da poesia e das artes. Apolo era o líder das Musas e patrono de Delfos, onde ficava seu oráculo mais famoso. Representado como a perfeição da beleza masculina jovem, Apolo personificava o ideal grego de harmonia, razão e moderação. Seus símbolos incluem a lira, o arco e flecha, o louro, o cisne e o sol. Era venerado como deus da cura, mas também podia trazer doenças com suas flechas.
-      `
+      `,
+    questions: [
+      {
+        question: "Qual é a relação de Apolo com Delfos?",
+        answer:
+          "Apolo era o patrono de Delfos, onde ficava seu oráculo mais famoso. Esse oráculo era um dos mais importantes centros de profecia na Grécia antiga.",
+        pinned: false,
+        userId: "user-2"
+      }
+    ]
   },
   {
     name: "Ártemis - Deusa da Caça",
@@ -127,7 +174,23 @@ const roomsData = [
     userId: "user-4",
     chunk: `
         Ártemis é a deusa da caça, dos animais selvagens, da região selvagem, do parto e da virgindade na mitologia grega. Filha de Zeus e Leto, e irmã gêmea de Apolo, nasceu na ilha de Delos. Ártemis é uma das três deusas virgens do Olimpo, junto com Atena e Héstia. Era protetora das jovens donzelas e das mulheres durante o parto, apesar de sua própria virgindade eterna. Representada como uma caçadora hábil, carregando arco e flechas, Ártemis vagava pelos bosques e montanhas acompanhada de ninfas e animais selvagens. Era feroz na proteção de sua castidade e de suas companheiras. Seus símbolos incluem o arco e flecha, a corça, o urso e a lua crescente. Mais tarde também se tornou associada à lua e à magia, sendo identificada com Selene e Hécate.
-      `
+      `,
+    questions: [
+      {
+        question: "Quais são as três deusas virgens do Olimpo?",
+        answer:
+          "As três deusas virgens do Olimpo são Ártemis, Atena e Héstia. Todas mantinham virgindade eterna e rejeitavam relações amorosas.",
+        pinned: false,
+        userId: "user-1"
+      },
+      {
+        question: "Por que Ártemis era protetora do parto apesar de ser virgem?",
+        answer:
+          "Ártemis era protetora das jovens donzelas e das mulheres durante o parto, apesar de sua própria virgindade eterna. Isso demonstra seu papel de cuidadora das mulheres em todos os estágios da vida.",
+        pinned: false,
+        userId: "user-3"
+      }
+    ]
   },
   {
     name: "Ares - Deus da Guerra",
@@ -135,7 +198,30 @@ const roomsData = [
     userId: "user-4",
     chunk: `
         Ares é o deus da guerra selvagem, sede de sangue e da matança personalizada na mitologia grega. Filho de Zeus e Hera, representa a violência e brutalidade da guerra, em contraste com Atena que representa a estratégia e a sabedoria militar. Seu culto não foi muito grande entre os gregos, sendo mais centrado na região norte da Grécia e em Esparta. Os romanos o identificaram com Marte, elevando muito seu status. Ares era frequentemente retratado como um guerreiro poderoso e agressivo, vestindo armadura completa e carregando lança e escudo. Seus símbolos incluem a lança, o escudo, o capacete, os cães e os abutres. Apesar de ser um olímpico, Ares era geralmente desprezado pelos outros deuses devido à sua natureza violenta e imprudente. Teve um famoso caso amoroso com Afrodite.
-      `
+      `,
+    questions: [
+      {
+        question: "Por que Ares era desprezado pelos outros deuses?",
+        answer:
+          "Apesar de ser um olímpico, Ares era geralmente desprezado pelos outros deuses devido à sua natureza violenta e imprudente. Ele representava a brutalidade da guerra sem sabedoria ou estratégia.",
+        pinned: false,
+        userId: "user-2"
+      },
+      {
+        question: "Como os romanos trataram Ares?",
+        answer:
+          "Os romanos identificaram Ares com Marte, elevando muito seu status. Enquanto os gregos não o valorizavam muito, os romanos o tornaram uma divindade importante.",
+        pinned: false,
+        userId: "user-5"
+      },
+      {
+        question: "Qual foi o famoso caso amoroso de Ares?",
+        answer:
+          "Ares teve um famoso caso amoroso com Afrodite, a deusa do amor e da beleza, que era casada com Hefesto.",
+        pinned: false,
+        userId: "user-1"
+      }
+    ]
   },
   {
     name: "Afrodite - Deusa do Amor",
@@ -143,7 +229,23 @@ const roomsData = [
     userId: "user-5",
     chunk: `
         Afrodite é a deusa do amor, da beleza e da sexualidade na mitologia grega. Responsável pela perpetuação da vida, prazer e alegria, Afrodite tinha um poder imenso sobre deuses e mortais. Na versão mais famosa de seu nascimento contada por Hesíodo, ela nasceu quando Cronos cortou os órgãos genitais de Urano e arremessou-os no mar; da espuma surgida ergueu-se Afrodite, emergindo adulta e de extraordinária beleza. Chegou à ilha de Chipre, que se tornou um de seus principais centros de culto. Afrodite era casada com Hefesto, mas teve vários amantes, sendo o mais famoso Ares. Seus símbolos incluem a rosa, a pomba, o cisne, a murta e a concha. Representada como a personificação da beleza ideal, Afrodite tinha o poder de inspirar amor e desejo. Seu cinturão mágico (cestus) tornava irresistível quem o usasse.
-      `
+      `,
+    questions: [
+      {
+        question: "Como Afrodite nasceu segundo Hesíodo?",
+        answer:
+          "Na versão contada por Hesíodo, Afrodite nasceu quando Cronos cortou os órgãos genitais de Urano e arremessou-os no mar. Da espuma surgida ergueu-se Afrodite, emergindo adulta e de extraordinária beleza.",
+        pinned: true,
+        userId: "user-2"
+      },
+      {
+        question: "O que era o cestus de Afrodite?",
+        answer:
+          "O cestus era o cinturão mágico de Afrodite que tornava irresistível quem o usasse. Era um dos objetos que simbolizavam seu poder de inspirar amor e desejo.",
+        pinned: false,
+        userId: "user-3"
+      }
+    ]
   },
   {
     name: "Hefesto - Deus da Forja",
@@ -159,7 +261,30 @@ const roomsData = [
     userId: "user-1",
     chunk: `
         Hermes é o mensageiro dos deuses na mitologia grega, filho de Zeus e da ninfa Maia. Possuidor de vários atributos, era uma divindade muito antiga, cultuado desde antes da Grécia clássica. Originalmente um deus da fertilidade, dos rebanhos, da magia e da divinação, tornou-se posteriormente o mensageiro dos deuses, patrono da ginástica, dos ladrões, dos diplomatas, dos comerciantes, da literatura, dos poetas, dos viajantes e das estradas. Hermes era conhecido por sua astúcia e habilidade como ladrão - ainda bebê, roubou o gado de Apolo. Usava sandálias aladas que lhe permitiam voar, e carregava o caduceu, um bastão com duas serpentes entrelaçadas. Era o guia das almas dos mortos ao submundo. Representado como um jovem atlético e ágil, Hermes personificava a eloquência, a rapidez de pensamento e a capacidade de transitar entre diferentes mundos.
-      `
+      `,
+    questions: [
+      {
+        question: "O que Hermes fez ainda bebê?",
+        answer:
+          "Hermes era conhecido por sua astúcia e habilidade como ladrão - ainda bebê, roubou o gado de Apolo. Isso demonstra sua natureza engenhosa desde o nascimento.",
+        pinned: false,
+        userId: "user-3"
+      },
+      {
+        question: "O que é o caduceu de Hermes?",
+        answer:
+          "O caduceu é um bastão com duas serpentes entrelaçadas que Hermes carregava. É um de seus símbolos mais conhecidos junto com as sandálias aladas.",
+        pinned: false,
+        userId: "user-4"
+      },
+      {
+        question: "Qual era o papel de Hermes em relação aos mortos?",
+        answer:
+          "Hermes era o guia das almas dos mortos ao submundo. Essa função demonstrava sua capacidade de transitar entre diferentes mundos - o dos vivos e o dos mortos.",
+        pinned: false,
+        userId: "user-2"
+      }
+    ]
   },
   {
     name: "Dioniso - Deus do Vinho",
@@ -167,7 +292,16 @@ const roomsData = [
     userId: "user-2",
     chunk: `
         Dioniso é o deus dos ciclos vitais, das festas, do vinho, da insânia, do teatro e dos ritos religiosos na mitologia grega. Filho de Zeus e da princesa mortal Sêmele, foi o único deus olímpico filho de uma mortal. Seu nascimento foi dramático: Sêmele morreu ao ver Zeus em sua forma divina verdadeira, e Zeus salvou o feto, costurando-o em sua coxa até completar a gestação. Por isso Dioniso é chamado "o nascido duas vezes". Era representado nas cidades gregas como o protetor dos que não pertencem à sociedade convencional, simbolizando tudo o que é caótico, perigoso e inesperado. Seus seguidores, as mênades e os sátiros, celebravam rituais extáticos em sua honra. Dioniso introduziu o cultivo da videira e a produção do vinho na Grécia. Seus símbolos incluem a videira, a hera, o tirso (bastão envolvido em hera) e o leopardo.
-      `
+      `,
+    questions: [
+      {
+        question: "Por que Dioniso é chamado de 'o nascido duas vezes'?",
+        answer:
+          "Dioniso é chamado 'o nascido duas vezes' porque Sêmele morreu ao ver Zeus em sua forma divina verdadeira, e Zeus salvou o feto, costurando-o em sua coxa até completar a gestação. Assim, ele nasceu duas vezes: uma de Sêmele e outra de Zeus.",
+        pinned: false,
+        userId: "user-4"
+      }
+    ]
   }
 ]
 
@@ -239,23 +373,23 @@ async function main() {
 
   for (const { chunk, questions, ...rest } of roomsData) {
     console.log("Criando sala: ", rest.name)
+
+    const roomExist = await prisma.room.findFirst({
+      where: { name: rest.name }
+    })
+
+    if (roomExist) {
+      console.log("Sala já existe, pulando...")
+      continue
+    }
+
     const room = await prisma.room.create({ data: rest })
-
     const embeddings = await generateEmbbedings(chunk.trim())
-
     await createRoomChunk(room.id, chunk.trim(), embeddings)
 
     const questionsData = questions?.map((q) => ({ ...q, roomId: room.id }))
-
     await prisma.question.createMany({ data: questionsData || [] })
   }
-
-  await signUp({
-    name: "Maycon Silva",
-    email: process.env.ADMIN_EMAIL as string,
-    password: process.env.ADMIN_PASSWORD as string,
-    confirmPassword: process.env.ADMIN_PASSWORD as string
-  })
 
   console.log("✅ Seed finalizado com sucesso!")
 }
