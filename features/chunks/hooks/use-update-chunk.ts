@@ -4,16 +4,16 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomDetailsQueryOptions } from "./use-room-details"
+import { roomDetailsQueryOptions } from "../../room/hooks/use-room-details"
 
-const updateRoomChunkRequest = client.api.rooms.chunks[":id"].$put
+const updateChunkRequest = client.api.chunks[":id"].$put
 
-type RequestType = InferRequestType<typeof updateRoomChunkRequest>
+type RequestType = InferRequestType<typeof updateChunkRequest>
 
-export const useUpdateRoomChunk = () => {
+export const useUpdateChunk = () => {
   return useMutation({
     mutationFn: async ({ param, json }: RequestType) => {
-      const res = await updateRoomChunkRequest({ param, json })
+      const res = await updateChunkRequest({ param, json })
 
       if (!res.ok) {
         const { message } = await res.json()

@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import type { InferRequestType } from "hono"
 import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomQueryOptions } from "./use-room"
+import { roomQueryOptions } from "../../room/hooks/use-room"
 
-const pinQuestionRequest = client.api.rooms.questions[":id"].pin.$patch
+const pinQuestionRequest = client.api.questions[":id"].pin.$patch
 
 type RequestType = InferRequestType<typeof pinQuestionRequest>
 type PinQuestionArgs = RequestType & {

@@ -3,8 +3,8 @@
 import { FieldGroup } from "@/components/ui/field"
 import { useAppForm } from "@/hooks/form"
 
+import { useUpdateChunk } from "../../chunks/hooks/use-update-chunk"
 import { useCreateRoomChunk } from "../hooks/use-create-room-chunk"
-import { useUpdateRoomChunk } from "../hooks/use-update-room-chunk"
 import { feedRoomSchema } from "../schemas"
 
 type RoomChunkFormProps = {
@@ -15,7 +15,7 @@ type RoomChunkFormProps = {
 
 export function RoomChunkForm({ roomId, chunkId, text }: RoomChunkFormProps) {
   const { mutateAsync: create } = useCreateRoomChunk()
-  const { mutateAsync: update } = useUpdateRoomChunk()
+  const { mutateAsync: update } = useUpdateChunk()
 
   const form = useAppForm({
     defaultValues: { text: text || "" },

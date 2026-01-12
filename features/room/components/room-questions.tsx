@@ -8,14 +8,14 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/co
 import { Toggle } from "@/components/ui/toggle"
 import { useConfirm } from "@/hooks/use-confirm"
 
-import { useDeleteRoomQuestion } from "../hooks/use-delete-room-question"
-import { usePinQuestion } from "../hooks/use-pin-question"
+import { useDeleteQuestion } from "../../questions/hooks/use-delete-question"
+import { usePinQuestion } from "../../questions/hooks/use-pin-question"
 import { useRoomDetails } from "../hooks/use-room-details"
 
 export function RoomQuestions({ roomId }: { roomId: string }) {
   const { data: room } = useRoomDetails({ param: { id: roomId } })
 
-  const { mutateAsync: deleteQuestion, isPending, variables } = useDeleteRoomQuestion()
+  const { mutateAsync: deleteQuestion, isPending, variables } = useDeleteQuestion()
   const { mutateAsync: pinQuestion } = usePinQuestion()
 
   const confirm = useConfirm()

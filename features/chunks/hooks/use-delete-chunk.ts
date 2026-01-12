@@ -4,18 +4,18 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomDetailsQueryOptions } from "./use-room-details"
+import { roomDetailsQueryOptions } from "../../room/hooks/use-room-details"
 
-const deleteRoomChunkRequest = client.api.rooms.chunks[":id"].$delete
+const deleteChunkRequest = client.api.chunks[":id"].$delete
 
-type DeleteRoomChunkArgs = InferRequestType<typeof deleteRoomChunkRequest> & {
+type DeleteChunkArgs = InferRequestType<typeof deleteChunkRequest> & {
   roomId: string
 }
 
-export const useDeleteRoomChunk = () => {
+export const useDeleteChunk = () => {
   return useMutation({
-    mutationFn: async ({ param }: DeleteRoomChunkArgs) => {
-      const res = await deleteRoomChunkRequest({ param })
+    mutationFn: async ({ param }: DeleteChunkArgs) => {
+      const res = await deleteChunkRequest({ param })
 
       if (!res.ok) {
         const { message } = await res.json()

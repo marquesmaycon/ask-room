@@ -4,18 +4,18 @@ import { toast } from "sonner"
 
 import { client } from "@/lib/rpc"
 
-import { roomQueryOptions } from "./use-room"
+import { roomQueryOptions } from "../../room/hooks/use-room"
 
-const deleteRoomQuestionRequest = client.api.rooms.questions[":id"].$delete
+const deleteQuestionRequest = client.api.questions[":id"].$delete
 
-type DeleteRoomQuestionArgs = InferRequestType<typeof deleteRoomQuestionRequest> & {
+type DeleteQuestionArgs = InferRequestType<typeof deleteQuestionRequest> & {
   roomId: string
 }
 
-export const useDeleteRoomQuestion = () => {
+export const useDeleteQuestion = () => {
   return useMutation({
-    mutationFn: async ({ param }: DeleteRoomQuestionArgs) => {
-      const res = await deleteRoomQuestionRequest({ param })
+    mutationFn: async ({ param }: DeleteQuestionArgs) => {
+      const res = await deleteQuestionRequest({ param })
 
       if (!res.ok) {
         const { message } = await res.json()

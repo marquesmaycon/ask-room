@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { authMiddleware, sessionMiddleware } from "@/lib/session-middleware"
 import { generateAnswer, generateEmbbedings, transcribeAudio } from "@/services/gemini"
 
-import { createRoomChunk, getSimilarTranscriptions, updateRoomChunk } from "../room-service"
+import { createRoomChunk, getSimilarTranscriptions } from "../room-service"
 import { questionSchema, roomSchema } from "../schemas"
 
 const roomIdParamValidator = zValidator("param", z.object({ id: z.string() }))
@@ -23,7 +23,7 @@ const roomsController = new Hono()
         _count: { select: { questions: true } }
       },
       where: { visibility: "PUBLIC" },
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "asc" }
     })
 
     return c.json({ rooms })
@@ -67,7 +67,10 @@ const roomsController = new Hono()
     const room = await prisma.room.findUniqueOrThrow({
       where: { id },
       include: {
-        questions: { include: { user: { select: { name: true } } } },
+        questions: {
+          include: { user: { select: { name: true } } },
+          orderBy: [{ pinned: "desc" }, { createdAt: "asc" }]
+        },
         invites: true
       }
     })
@@ -201,67 +204,6 @@ const roomsController = new Hono()
       }
     }
   )
-  .delete(
-    "chunks/:id",
-    authMiddleware,
-    zValidator("param", z.object({ id: z.string() })),
-    async (c) => {
-      const { id } = c.req.valid("param")
-      const user = c.get("user")
-      const isAdmin = c.get("isAdmin")
-
-      const chunk = await prisma.roomChunk.findUniqueOrThrow({
-        where: { id },
-        include: { room: { select: { userId: true } } }
-      })
-
-      if (user?.id !== chunk.room.userId && !isAdmin) {
-        return c.json({ message: "Unauthorized" }, 401)
-      }
-
-      await prisma.roomChunk.deleteMany({
-        where: { id: chunk.id }
-      })
-
-      return c.body(null, 204)
-    }
-  )
-  .put(
-    "chunks/:id",
-    authMiddleware,
-    zValidator("param", z.object({ id: z.string() })),
-    zValidator("json", z.object({ text: z.string().min(1, "Text is required") })),
-    async (c) => {
-      const { id } = c.req.valid("param")
-      const { text } = c.req.valid("json")
-      const user = c.get("user")
-      const isAdmin = c.get("isAdmin")
-
-      const chunk = await prisma.roomChunk.findUniqueOrThrow({
-        where: { id },
-        include: { room: { select: { userId: true } } }
-      })
-
-      if (user?.id !== chunk.room.userId && !isAdmin) {
-        return c.json({ message: "Unauthorized" }, 401)
-      }
-
-      try {
-        const embeddings = await generateEmbbedings(text)
-        const updatedChunk = await updateRoomChunk(id, text, embeddings)
-
-        return c.json({ chunk: updatedChunk }, 200)
-      } catch (error) {
-        console.error("Chunk update error:", error)
-        return c.json(
-          {
-            message: error instanceof Error ? error.message : "Failed to update chunk"
-          },
-          500
-        )
-      }
-    }
-  )
   .post(
     "/:id/audio",
     roomIdParamValidator,
@@ -300,58 +242,6 @@ const roomsController = new Hono()
           500
         )
       }
-    }
-  )
-  .patch(
-    "/questions/:id/pin",
-    authMiddleware,
-    zValidator("param", z.object({ id: z.string() })),
-    async (c) => {
-      const { id } = c.req.valid("param")
-      const user = c.get("user")
-      const isAdmin = c.get("isAdmin")
-
-      const question = await prisma.question.findUniqueOrThrow({
-        where: { id },
-        include: { room: { select: { userId: true } } }
-      })
-
-      if (user?.id !== question.room.userId && !isAdmin) {
-        return c.json({ message: "Unauthorized" }, 401)
-      }
-
-      const data = await prisma.question.update({
-        where: { id: question.id },
-        data: { pinned: !question.pinned },
-        select: { id: true, pinned: true }
-      })
-
-      return c.json({ question: data }, 200)
-    }
-  )
-  .delete(
-    "/questions/:id",
-    authMiddleware,
-    zValidator("param", z.object({ id: z.string() })),
-    async (c) => {
-      const { id } = c.req.valid("param")
-      const user = c.get("user")
-      const isAdmin = c.get("isAdmin")
-
-      const question = await prisma.question.findUniqueOrThrow({
-        where: { id },
-        include: { room: { select: { userId: true } } }
-      })
-
-      if (user?.id !== question.room.userId && !isAdmin) {
-        return c.json({ message: "Unauthorized" }, 401)
-      }
-
-      await prisma.question.deleteMany({
-        where: { id: question.id }
-      })
-
-      return c.body(null, 204)
     }
   )
 

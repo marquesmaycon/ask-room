@@ -8,7 +8,7 @@ import { Item, ItemActions, ItemContent, ItemDescription } from "@/components/ui
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useConfirm } from "@/hooks/use-confirm"
 
-import { useDeleteRoomChunk } from "../hooks/use-delete-room-chunk"
+import { useDeleteChunk } from "../../chunks/hooks/use-delete-chunk"
 import { useRoomDetails } from "../hooks/use-room-details"
 import { FeedRoom } from "./feed-room"
 import { RoomChunkForm } from "./room-chunk-form"
@@ -16,7 +16,7 @@ import { RoomChunkForm } from "./room-chunk-form"
 export function RoomChunks({ roomId }: { roomId: string }) {
   const { data: room } = useRoomDetails({ param: { id: roomId } })
 
-  const { mutateAsync: deleteChunk, isPending, variables } = useDeleteRoomChunk()
+  const { mutateAsync: deleteChunk, isPending, variables } = useDeleteChunk()
 
   const confirm = useConfirm()
 
