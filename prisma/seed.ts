@@ -1,141 +1,172 @@
-import { createRoomChunk, getSimilarTranscriptions } from "@/features/room/room-service"
+import { createRoomChunk } from "@/features/room/room-service"
 import { prisma } from "@/lib/prisma"
-import { generateAnswer, generateEmbbedings } from "@/services/gemini"
+import { generateEmbbedings } from "@/services/gemini"
 
 const roomsData = [
   {
-    name: "Introdução ao React",
-    description: "Conceitos básicos do React, componentes, props e estado.",
+    name: "Zeus - Rei dos Deuses",
+    description: "O soberano do Olimpo, deus dos céus e do trovão.",
     userId: "user-1",
     chunk: `
-        React é uma biblioteca JavaScript para construção de interfaces de usuário.
-        Ele é baseado em componentes reutilizáveis e utiliza um fluxo de dados unidirecional.
-        Os principais conceitos incluem componentes funcionais, props, estado e hooks como useState e useEffect.
-      `,
-    questions: [
-      { question: "O que são componentes no React?", pinned: true, userId: "user-2" },
-      { question: "Qual a diferença entre props e state?", pinned: true, userId: "user-2" },
-      { question: "Quando devo usar useEffect?", userId: "user-3" },
-      { question: "React é um framework ou biblioteca?" }
-    ]
-  },
-  {
-    name: "Clean Code na Prática",
-    description: "Boas práticas para escrever código limpo e sustentável.",
-    userId: "user-2",
-    chunk: `
-        Clean Code é um conjunto de práticas que visa tornar o código mais legível,
-        manutenível e fácil de entender. Inclui nomes significativos, funções pequenas,
-        baixo acoplamento e responsabilidade única.
-      `,
-    questions: [
-      { question: "O que caracteriza um código limpo?", pinned: true, userId: "user-4" },
-      { question: "Por que nomes de variáveis são tão importantes?", userId: "user-5" },
-      { question: "Funções grandes são sempre um problema?" }
-    ]
-  },
-  {
-    name: "Conceitos de Docker",
-    description: "Introdução a containers e Docker.",
-    userId: "user-3",
-    chunk: `
-        Docker é uma plataforma que permite criar, empacotar e executar aplicações em containers.
-        Containers são ambientes isolados que garantem consistência entre desenvolvimento e produção.
-      `,
-    questions: [
-      { question: "O que é um container?", pinned: true, userId: "user-1" },
-      { question: "Qual a diferença entre container e máquina virtual?", userId: "user-5" },
-      { question: "Por que usar Docker em produção?", userId: "user-5" }
-    ]
-  },
-  {
-    name: "Banco de Dados Relacionais",
-    description: "Fundamentos de bancos de dados SQL.",
-    userId: "user-4",
-    chunk: `
-        Bancos de dados relacionais organizam dados em tabelas relacionadas entre si.
-        Utilizam SQL como linguagem de consulta e garantem integridade através de chaves primárias e estrangeiras.
-      `,
-    questions: [
-      { question: "O que é uma chave primária?", pinned: true, userId: "user-3" },
-      { question: "Quando usar chave estrangeira?", userId: "user-1" },
-      { question: "O que é normalização?", userId: "user-2" }
-    ]
-  },
-  {
-    name: "APIs REST",
-    description: "Boas práticas para criação de APIs RESTful.",
-    userId: "user-5",
-    chunk: `
-        APIs REST utilizam padrões HTTP e são baseadas em recursos.
-        Os métodos mais comuns são GET, POST, PUT, PATCH e DELETE.
-        Uma boa API REST é stateless e previsível.
-      `,
-    questions: [
-      { question: "Qual a diferença entre PUT e PATCH?", pinned: true },
-      { question: "O que significa uma API ser stateless?", userId: "user-4" },
-      { question: "Quando usar status HTTP 201?", userId: "user-2" }
-    ]
-  },
-  {
-    name: "Introdução à Inteligência Artificial",
-    description: "Conceitos iniciais sobre IA.",
-    userId: "user-1",
-    chunk: `
-        Inteligência Artificial é a área da computação que busca criar sistemas capazes
-        de realizar tarefas que normalmente exigiriam inteligência humana.
-        Inclui aprendizado de máquina, processamento de linguagem natural e visão computacional.
+        Zeus é o deus dos céus e do trovão na mitologia grega, rei dos deuses do Olimpo. Filho dos titãs Cronos e Reia, é o mais jovem de seus irmãos. Zeus governa o Monte Olimpo como o pai dos deuses e dos homens, sendo conhecido por sua força e autoridade suprema. Seus símbolos incluem o raio, a águia, o touro e o carvalho. Zeus é casado com Hera, mas é famoso por suas numerosas aventuras amorosas com deusas e mortais. Como senhor dos céus, controla o clima, especialmente o trovão e a chuva, e é considerado o protetor da justiça, da ordem e da hospitalidade. Sua influência se estende sobre todos os aspectos da vida divina e mortal.
       `,
     questions: [
       {
-        question: "O que diferencia IA de algoritmos tradicionais?",
+        question: "Quais são os principais símbolos de Zeus?",
+        answer:
+          "Os símbolos de Zeus incluem o raio, a águia, o touro e o carvalho. Esses símbolos representam seu poder sobre os céus e sua autoridade suprema como rei dos deuses.",
+        pinned: false,
+        userId: "user-3"
+      },
+      {
+        question: "Por que Zeus é considerado protetor da justiça e da hospitalidade?",
+        answer:
+          "Como senhor dos céus e pai dos deuses e dos homens, Zeus é considerado o protetor da justiça, da ordem e da hospitalidade. Sua influência se estende sobre todos os aspectos da vida divina e mortal.",
+        pinned: false,
+        userId: "user-5"
+      },
+      {
+        question: "Qual é a relação familiar de Zeus com os titãs?",
+        answer:
+          "Zeus é filho dos titãs Cronos e Reia, sendo o mais jovem de seus irmãos. Ele governa o Monte Olimpo como rei dos deuses após vencer os titãs.",
         pinned: true,
+        userId: "user-4"
+      }
+    ]
+  },
+  {
+    name: "Hera - Rainha dos Deuses",
+    description: "Deusa do casamento, das mulheres e da família.",
+    userId: "user-1",
+    chunk: `
+        Hera é a deusa do casamento, da maternidade e das esposas na mitologia grega. Irmã e esposa de Zeus, é a rainha dos deuses olímpicos. Filha de Cronos e Reia, Hera preside as bodas e é o arquétipo da união no leito conjugal. Representada como majestosa e solene, muitas vezes coroada, Hera geralmente ostenta na mão uma romã, símbolo da fertilidade. A vaca e o pavão são seus animais simbólicos principais. Retratada como ciumenta e agressiva contra qualquer relação extraconjugal de Zeus, odiava e perseguia as amantes do marido e os filhos bastardos gerados desses relacionamentos. Apesar de sua personalidade vingativa nas histórias, era amplamente reverenciada como protetora do casamento e das mulheres casadas.
+      `,
+    questions: [
+      {
+        question: "Quais são os animais simbólicos de Hera?",
+        answer:
+          "A vaca e o pavão são os animais simbólicos principais de Hera. Esses animais representam sua majestade e posição como rainha dos deuses olímpicos.",
+        pinned: false,
         userId: "user-2"
       },
-      { question: "O que é machine learning?", userId: "user-3" }
+      {
+        question: "O que a romã simboliza em relação a Hera?",
+        answer:
+          "Hera geralmente ostenta na mão uma romã, que é símbolo da fertilidade. Isso está relacionado ao seu papel como deusa do casamento e da maternidade.",
+        pinned: false,
+        userId: "user-4"
+      },
+      {
+        question: "Como Hera reagia às aventuras amorosas de Zeus?",
+        answer:
+          "Retratada como ciumenta e agressiva contra qualquer relação extraconjugal de Zeus, Hera odiava e perseguia as amantes do marido e os filhos bastardos gerados desses relacionamentos.",
+        pinned: false,
+        userId: "user-5"
+      },
+      {
+        question: "Qual é o papel de Hera nas bodas e no casamento?",
+        answer:
+          "Hera preside as bodas e é o arquétipo da união no leito conjugal. Apesar de sua personalidade vingativa nas histórias, era amplamente reverenciada como protetora do casamento e das mulheres casadas.",
+        pinned: false,
+        userId: "user-3"
+      }
     ]
   },
   {
-    name: "Git e Controle de Versão",
-    description: "Uso do Git no dia a dia.",
+    name: "Posídon - Senhor dos Mares",
+    description: "Deus dos mares, terremotos e cavalos.",
     userId: "user-2",
     chunk: `
-        Git é um sistema de controle de versão distribuído.
-        Ele permite acompanhar mudanças no código, trabalhar em equipe e manter histórico de alterações.
+        Posídon é o deus dos mares, terremotos e cavalos na mitologia grega. Filho de Cronos e Reia, é irmão de Zeus e Hades. Após a vitória sobre os titãs, recebeu o domínio sobre todos os mares e oceanos. É representado segurando um tridente, seu principal símbolo e arma. Posídon é conhecido por seu temperamento volátil, capaz de causar tempestades violentas e terremotos quando irritado. Vivia em um palácio dourado no fundo do mar, cercado por criaturas marinhas. É considerado também o criador dos cavalos e protetor dos cavaleiros. Posídon teve numerosos filhos, incluindo vários heróis e criaturas míticas. Sua influência se estendia sobre navegadores, pescadores e todos aqueles que dependiam do mar.
       `,
     questions: [
-      { question: "Qual a diferença entre commit e push?", pinned: true, userId: "user-5" },
-      { question: "Para que servem branches?", userId: "user-3" }
+      {
+        question: "Qual é o principal símbolo de Posídon e por quê?",
+        answer:
+          "O tridente é o principal símbolo e arma de Posídon. Ele é representado segurando este instrumento, que simboliza seu domínio sobre todos os mares e oceanos.",
+        pinned: true,
+        userId: "user-1"
+      },
+      {
+        question: "Como é descrito o temperamento de Posídon?",
+        answer:
+          "Posídon é conhecido por seu temperamento volátil, sendo capaz de causar tempestades violentas e terremotos quando irritado. Isso reflete seu controle sobre as forças da natureza marinha.",
+        pinned: false,
+        userId: "user-3"
+      }
     ]
   },
   {
-    name: "Next.js e Server Side Rendering",
-    description: "Renderização no Next.js.",
+    name: "Deméter - Deusa da Colheita",
+    description: "Deusa da agricultura, fertilidade e das estações.",
+    userId: "user-2",
+    chunk: `
+        Deméter é a deusa da colheita, agricultura e fertilidade na mitologia grega. Filha de Cronos e Reia, é irmã de Zeus, Hera, Hades e Posídon. Sua principal função era ensinar aos mortais a arte da agricultura, especialmente o cultivo do trigo. O mito mais famoso envolvendo Deméter é o rapto de sua filha Perséfone por Hades. Durante a busca desesperada pela filha, Deméter fez a terra tornar-se estéril, causando uma grande fome. O acordo final estabeleceu que Perséfone passaria parte do ano no submundo com Hades e parte na superfície com a mãe, criando assim as estações do ano. Deméter é representada tendo em uma das mãos uma foice e na outra espigas e papoulas, trazendo na cabeça uma coroa com esses mesmos elementos.
+      `
+  },
+  {
+    name: "Atena - Deusa da Sabedoria",
+    description: "Deusa da sabedoria, estratégia e guerra justa.",
     userId: "user-3",
     chunk: `
-        Next.js é um framework React que permite renderização no servidor,
-        geração de sites estáticos e criação de APIs.
-        SSR melhora SEO e tempo de carregamento inicial.
-      `,
-    questions: [
-      { question: "O que é SSR no Next.js?", pinned: true, userId: "user-1" },
-      { question: "Quando usar SSG em vez de SSR?", userId: "user-5" }
-    ]
+        Atena é a deusa da sabedoria, estratégia em batalha, artes, justiça e habilidade na mitologia grega. Filha partenogênica de Zeus, nasceu da cabeça de seu pai já adulta e completamente armada. Jamais se casou ou tomou amantes, mantendo uma virgindade perpétua. Era imbatível na guerra, superando até mesmo Ares em habilidade estratégica. Atena tornou-se mais conhecida como a protetora de Atenas, cidade que leva seu nome após vencer uma disputa com Posídon ao oferecer a oliveira aos atenienses. Seus símbolos incluem a coruja, a oliveira, a serpente e a égide (escudo). Representada sempre vestindo armadura e capacete, Atena personifica a sabedoria combinada com a força, sendo conselheira de heróis e patrona das artes e ofícios.
+      `
   },
   {
-    name: "Boas Práticas em Backend",
-    description: "Arquitetura e organização de projetos backend.",
+    name: "Apolo - Deus da Luz",
+    description: "Deus do Sol, música, profecia e medicina.",
+    userId: "user-3",
+    chunk: `
+        Apolo é uma das divindades principais da mitologia greco-romana, um dos deuses olímpicos. Filho de Zeus e Leto, e irmão gêmeo de Ártemis, Apolo nasceu na ilha de Delos. Era descrito como o deus da divina distância, identificado com o Sol e a Luz da Verdade. Suas funções e atributos eram diversos: deus da música, da profecia, da medicina, do arco e flecha, da poesia e das artes. Apolo era o líder das Musas e patrono de Delfos, onde ficava seu oráculo mais famoso. Representado como a perfeição da beleza masculina jovem, Apolo personificava o ideal grego de harmonia, razão e moderação. Seus símbolos incluem a lira, o arco e flecha, o louro, o cisne e o sol. Era venerado como deus da cura, mas também podia trazer doenças com suas flechas.
+      `
+  },
+  {
+    name: "Ártemis - Deusa da Caça",
+    description: "Deusa da caça, vida selvagem e da Lua.",
     userId: "user-4",
     chunk: `
-        Boas práticas em backend incluem separação de responsabilidades,
-        uso de camadas, validação de dados e tratamento de erros.
-        Uma boa arquitetura facilita manutenção e escalabilidade.
-      `,
-    questions: [
-      { question: "Por que separar camadas no backend?", pinned: true, userId: "user-2" },
-      { question: "Qual a importância da validação de dados?", userId: "user-3" },
-      { question: "Como lidar com erros de forma consistente?" }
-    ]
+        Ártemis é a deusa da caça, dos animais selvagens, da região selvagem, do parto e da virgindade na mitologia grega. Filha de Zeus e Leto, e irmã gêmea de Apolo, nasceu na ilha de Delos. Ártemis é uma das três deusas virgens do Olimpo, junto com Atena e Héstia. Era protetora das jovens donzelas e das mulheres durante o parto, apesar de sua própria virgindade eterna. Representada como uma caçadora hábil, carregando arco e flechas, Ártemis vagava pelos bosques e montanhas acompanhada de ninfas e animais selvagens. Era feroz na proteção de sua castidade e de suas companheiras. Seus símbolos incluem o arco e flecha, a corça, o urso e a lua crescente. Mais tarde também se tornou associada à lua e à magia, sendo identificada com Selene e Hécate.
+      `
+  },
+  {
+    name: "Ares - Deus da Guerra",
+    description: "Deus da guerra, violência e derramamento de sangue.",
+    userId: "user-4",
+    chunk: `
+        Ares é o deus da guerra selvagem, sede de sangue e da matança personalizada na mitologia grega. Filho de Zeus e Hera, representa a violência e brutalidade da guerra, em contraste com Atena que representa a estratégia e a sabedoria militar. Seu culto não foi muito grande entre os gregos, sendo mais centrado na região norte da Grécia e em Esparta. Os romanos o identificaram com Marte, elevando muito seu status. Ares era frequentemente retratado como um guerreiro poderoso e agressivo, vestindo armadura completa e carregando lança e escudo. Seus símbolos incluem a lança, o escudo, o capacete, os cães e os abutres. Apesar de ser um olímpico, Ares era geralmente desprezado pelos outros deuses devido à sua natureza violenta e imprudente. Teve um famoso caso amoroso com Afrodite.
+      `
+  },
+  {
+    name: "Afrodite - Deusa do Amor",
+    description: "Deusa do amor, beleza e sexualidade.",
+    userId: "user-5",
+    chunk: `
+        Afrodite é a deusa do amor, da beleza e da sexualidade na mitologia grega. Responsável pela perpetuação da vida, prazer e alegria, Afrodite tinha um poder imenso sobre deuses e mortais. Na versão mais famosa de seu nascimento contada por Hesíodo, ela nasceu quando Cronos cortou os órgãos genitais de Urano e arremessou-os no mar; da espuma surgida ergueu-se Afrodite, emergindo adulta e de extraordinária beleza. Chegou à ilha de Chipre, que se tornou um de seus principais centros de culto. Afrodite era casada com Hefesto, mas teve vários amantes, sendo o mais famoso Ares. Seus símbolos incluem a rosa, a pomba, o cisne, a murta e a concha. Representada como a personificação da beleza ideal, Afrodite tinha o poder de inspirar amor e desejo. Seu cinturão mágico (cestus) tornava irresistível quem o usasse.
+      `
+  },
+  {
+    name: "Hefesto - Deus da Forja",
+    description: "Deus do fogo, metalurgia e artesanato.",
+    userId: "user-5",
+    chunk: `
+        Hefesto é o deus da tecnologia, dos ferreiros, artesãos, escultores, metais, metalurgia, fogo e dos vulcões na mitologia grega. Filho de Zeus e Hera (ou apenas de Hera por partenogênese), era o deus ferreiro do Olimpo. Diferente dos outros deuses, Hefesto era manco, resultado de ter sido jogado do Olimpo por Hera devido à sua aparência feia ao nascer. Apesar de sua deficiência física, era o mais habilidoso de todos os artesãos divinos. Criou as armas e armaduras dos deuses, incluindo o raio de Zeus, o tridente de Posídon e a égide de Atena. Seu principal lugar de trabalho era sob vulcões, onde mantinha suas forjas. Era casado com Afrodite, a deusa mais bela, mas ela constantemente o traía. Hefesto é representado como um homem forte e barbudo, geralmente segurando ferramentas de ferreiro. Seu equivalente romano é Vulcano.
+      `
+  },
+  {
+    name: "Hermes - Mensageiro dos Deuses",
+    description: "Deus mensageiro, do comércio e dos viajantes.",
+    userId: "user-1",
+    chunk: `
+        Hermes é o mensageiro dos deuses na mitologia grega, filho de Zeus e da ninfa Maia. Possuidor de vários atributos, era uma divindade muito antiga, cultuado desde antes da Grécia clássica. Originalmente um deus da fertilidade, dos rebanhos, da magia e da divinação, tornou-se posteriormente o mensageiro dos deuses, patrono da ginástica, dos ladrões, dos diplomatas, dos comerciantes, da literatura, dos poetas, dos viajantes e das estradas. Hermes era conhecido por sua astúcia e habilidade como ladrão - ainda bebê, roubou o gado de Apolo. Usava sandálias aladas que lhe permitiam voar, e carregava o caduceu, um bastão com duas serpentes entrelaçadas. Era o guia das almas dos mortos ao submundo. Representado como um jovem atlético e ágil, Hermes personificava a eloquência, a rapidez de pensamento e a capacidade de transitar entre diferentes mundos.
+      `
+  },
+  {
+    name: "Dioniso - Deus do Vinho",
+    description: "Deus do vinho, festas, teatro e êxtase.",
+    userId: "user-2",
+    chunk: `
+        Dioniso é o deus dos ciclos vitais, das festas, do vinho, da insânia, do teatro e dos ritos religiosos na mitologia grega. Filho de Zeus e da princesa mortal Sêmele, foi o único deus olímpico filho de uma mortal. Seu nascimento foi dramático: Sêmele morreu ao ver Zeus em sua forma divina verdadeira, e Zeus salvou o feto, costurando-o em sua coxa até completar a gestação. Por isso Dioniso é chamado "o nascido duas vezes". Era representado nas cidades gregas como o protetor dos que não pertencem à sociedade convencional, simbolizando tudo o que é caótico, perigoso e inesperado. Seus seguidores, as mênades e os sátiros, celebravam rituais extáticos em sua honra. Dioniso introduziu o cultivo da videira e a produção do vinho na Grécia. Seus símbolos incluem a videira, a hera, o tirso (bastão envolvido em hera) e o leopardo.
+      `
   }
 ]
 
@@ -150,7 +181,8 @@ async function main() {
         id: "user-1",
         name: "Ana Ribeiro",
         email: "ana@demo.dev",
-        image: "https://i.pravatar.cc/150?img=12",
+        image:
+          "https://api.dicebear.com/9.x/micah/svg?seed=Ana&backgroundColor=ffd5dc&baseColor=f9c9b6&eyes=round&glasses=round&glassesProbability=30&hair=pixie&hairColor=77311d&mouth=smile&shirt=crew&shirtColor=fc909f",
         emailVerified: true
       }
     }),
@@ -161,7 +193,8 @@ async function main() {
         id: "user-2",
         name: "Lucas Martins",
         email: "lucas@demo.dev",
-        image: "https://i.pravatar.cc/150?img=32",
+        image:
+          "https://api.dicebear.com/9.x/micah/svg?seed=Lucas&backgroundColor=d1d4f9&baseColor=ac6651&eyes=eyes&glasses=square&glassesProbability=50&hair=fonze&hairColor=000000&mouth=smirk&shirt=collared&shirtColor=6bd9e9",
         emailVerified: true
       }
     }),
@@ -172,7 +205,8 @@ async function main() {
         id: "user-3",
         name: "Mariana Costa",
         email: "mariana@demo.dev",
-        image: "https://i.pravatar.cc/150?img=47",
+        image:
+          "https://api.dicebear.com/9.x/micah/svg?seed=Mariana&backgroundColor=b6e3f4&baseColor=f9c9b6&eyes=eyesShadow&glasses=round&glassesProbability=20&hair=full&hairColor=fc909f&mouth=laughing&shirt=open&shirtColor=e0ddff",
         emailVerified: true
       }
     }),
@@ -183,7 +217,8 @@ async function main() {
         id: "user-4",
         name: "Pedro Almeida",
         email: "pedro@demo.dev",
-        image: "https://i.pravatar.cc/150?img=18",
+        image:
+          "https://api.dicebear.com/9.x/micah/svg?seed=Pedro&backgroundColor=ffdfbf&baseColor=77311d&eyes=smiling&glasses=square&glassesProbability=60&hair=dougFunny&hairColor=ac6651&mouth=smile&shirt=crew&shirtColor=9287ff",
         emailVerified: true
       }
     }),
@@ -194,7 +229,8 @@ async function main() {
         id: "user-5",
         name: "Rafael Souza",
         email: "rafael@demo.dev",
-        image: "https://i.pravatar.cc/150?img=7",
+        image:
+          "https://api.dicebear.com/9.x/micah/svg?seed=Rafael&backgroundColor=c0aede&baseColor=ac6651&eyes=round&glasses=round&glassesProbability=40&hair=dannyPhantom&hairColor=6bd9e9&mouth=nervous&shirt=collared&shirtColor=f4d150",
         emailVerified: true
       }
     })
@@ -208,25 +244,9 @@ async function main() {
 
     await createRoomChunk(room.id, chunk.trim(), embeddings)
 
-    const questionsData = []
+    const questionsData = questions?.map((q) => ({ ...q, roomId: room.id }))
 
-    for (const { question, ...rest } of questions) {
-      console.log("Criando pergunta: ", question)
-      const embedding = await generateEmbbedings(question)
-      const similarTranscriptions = await getSimilarTranscriptions(embedding, room.id)
-      const answer = await generateAnswer(question, similarTranscriptions)
-
-      questionsData.push({
-        question,
-        answer,
-        roomId: room.id,
-        ...rest
-      })
-    }
-
-    await prisma.question.createMany({
-      data: questionsData
-    })
+    await prisma.question.createMany({ data: questionsData || [] })
   }
 
   console.log("✅ Seed finalizado com sucesso!")
