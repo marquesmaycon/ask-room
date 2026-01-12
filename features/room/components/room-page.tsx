@@ -13,27 +13,23 @@ import { cn } from "@/lib/utils"
 import { useRoom } from "../hooks/use-room"
 import { RoomQuestionForm } from "./room-question-form"
 
-export function RoomPage() {
+type RoomPageProps = {
+  isAdmin: boolean
+}
+
+export function RoomPage({ isAdmin }: RoomPageProps) {
   const { id } = useParams<{ id: string }>()
   const { data: session, isPending } = authClient.useSession()
 
   const { data: room } = useRoom({ param: { id } })
 
+  const isPrivate = room?.visibility === "PRIVATE"
+  const isInvited = !isPending && room?.invites.some(({ email }) => email === session?.user?.email)
   const isMyRoom = !isPending && session?.user?.id === room?.userId
-  const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
 
-  console.log(session?.user.email, process.env.NEXT_PUBLIC_ADMIN_EMAIL)
-
-  if (
-    room?.visibility === "PRIVATE" &&
-    !room.invites.some(({ email }) => email === session?.user?.email) &&
-    !isMyRoom &&
-    !isAdmin
-  ) {
+  if (isPrivate && !isInvited && !isMyRoom && !isAdmin) {
     redirect("/")
   }
-
-  console.log(isAdmin)
 
   return (
     <div className="space-y-12">

@@ -21,7 +21,7 @@ export default async function RoomConfigPage({ params }: EditRoomPageProps) {
 
   const room = queryClient.getQueryData(queryOptions.queryKey)
 
-  const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
+  const isAdmin = session?.user?.email === process.env.ADMIN_EMAIL
 
   if (session?.user?.id !== room?.userId && !isAdmin) {
     redirect("/")

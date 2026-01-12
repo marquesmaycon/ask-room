@@ -1,3 +1,4 @@
+import { signUp } from "@/features/auth/actions"
 import { createRoomChunk } from "@/features/room/room-service"
 import { prisma } from "@/lib/prisma"
 import { generateEmbbedings } from "@/services/gemini"
@@ -248,6 +249,13 @@ async function main() {
 
     await prisma.question.createMany({ data: questionsData || [] })
   }
+
+  await signUp({
+    name: "Maycon Silva",
+    email: process.env.ADMIN_EMAIL as string,
+    password: process.env.ADMIN_PASSWORD as string,
+    confirmPassword: process.env.ADMIN_PASSWORD as string
+  })
 
   console.log("✅ Seed finalizado com sucesso!")
 }

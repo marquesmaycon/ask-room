@@ -24,7 +24,7 @@ export const sessionMiddleware = createMiddleware<SessionMiddlewareContext>(asyn
 
   c.set("user", session.user)
   c.set("session", session.session)
-  c.set("isAdmin", session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL)
+  c.set("isAdmin", session.user.email === process.env.ADMIN_EMAIL)
 
   await next()
 })
