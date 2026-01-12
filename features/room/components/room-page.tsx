@@ -20,14 +20,20 @@ export function RoomPage() {
   const { data: room } = useRoom({ param: { id } })
 
   const isMyRoom = !isPending && session?.user?.id === room?.userId
+  const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL
+
+  console.log(session?.user.email, process.env.NEXT_PUBLIC_ADMIN_EMAIL)
 
   if (
     room?.visibility === "PRIVATE" &&
     !room.invites.some(({ email }) => email === session?.user?.email) &&
-    !isMyRoom
+    !isMyRoom &&
+    !isAdmin
   ) {
     redirect("/")
   }
+
+  console.log(isAdmin)
 
   return (
     <div className="space-y-12">
@@ -40,7 +46,7 @@ export function RoomPage() {
             <p>{room?.description}</p>
           </div>
         </div>
-        {isMyRoom && (
+        {(isMyRoom || isAdmin) && (
           <div className="space-x-2">
             <Button asChild variant="outline">
               <Link href={`/dashboard/room/${id}`}>

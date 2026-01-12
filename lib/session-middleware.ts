@@ -7,6 +7,7 @@ type SessionMiddlewareContext = {
   Variables: {
     user: User | null
     session: Session | null
+    isAdmin: boolean
   }
 }
 
@@ -16,12 +17,14 @@ export const sessionMiddleware = createMiddleware<SessionMiddlewareContext>(asyn
   if (!session) {
     c.set("user", null)
     c.set("session", null)
+    c.set("isAdmin", false)
     await next()
     return
   }
 
   c.set("user", session.user)
   c.set("session", session.session)
+  c.set("isAdmin", session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL)
 
   await next()
 })

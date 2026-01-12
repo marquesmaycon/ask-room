@@ -41,6 +41,7 @@ const roomsController = new Hono()
   .get("/:id/details", authMiddleware, roomIdParamValidator, async (c) => {
     const { id } = c.req.valid("param")
     const user = c.get("user")
+    const isAdmin = c.get("isAdmin")
 
     const room = await prisma.room.findUnique({
       where: { id },
@@ -54,7 +55,7 @@ const roomsController = new Hono()
       }
     })
 
-    if (user?.id !== room?.userId) {
+    if (user?.id !== room?.userId && !isAdmin) {
       return c.json({ message: "Unauthorized" }, 401)
     }
 
@@ -101,12 +102,13 @@ const roomsController = new Hono()
     const { id } = c.req.valid("param")
     const { invites, ...data } = c.req.valid("json")
     const user = c.get("user")
+    const isAdmin = c.get("isAdmin")
 
     const room = await prisma.room.findUniqueOrThrow({
       where: { id }
     })
 
-    if (user?.id !== room.userId) {
+    if (user?.id !== room.userId && !isAdmin) {
       return c.json({ message: "Unauthorized" }, 401)
     }
 
@@ -206,13 +208,14 @@ const roomsController = new Hono()
     async (c) => {
       const { id } = c.req.valid("param")
       const user = c.get("user")
+      const isAdmin = c.get("isAdmin")
 
       const chunk = await prisma.roomChunk.findUniqueOrThrow({
         where: { id },
         include: { room: { select: { userId: true } } }
       })
 
-      if (user?.id !== chunk.room.userId) {
+      if (user?.id !== chunk.room.userId && !isAdmin) {
         return c.json({ message: "Unauthorized" }, 401)
       }
 
@@ -232,13 +235,14 @@ const roomsController = new Hono()
       const { id } = c.req.valid("param")
       const { text } = c.req.valid("json")
       const user = c.get("user")
+      const isAdmin = c.get("isAdmin")
 
       const chunk = await prisma.roomChunk.findUniqueOrThrow({
         where: { id },
         include: { room: { select: { userId: true } } }
       })
 
-      if (user?.id !== chunk.room.userId) {
+      if (user?.id !== chunk.room.userId && !isAdmin) {
         return c.json({ message: "Unauthorized" }, 401)
       }
 
@@ -305,13 +309,14 @@ const roomsController = new Hono()
     async (c) => {
       const { id } = c.req.valid("param")
       const user = c.get("user")
+      const isAdmin = c.get("isAdmin")
 
       const question = await prisma.question.findUniqueOrThrow({
         where: { id },
         include: { room: { select: { userId: true } } }
       })
 
-      if (user?.id !== question.room.userId) {
+      if (user?.id !== question.room.userId && !isAdmin) {
         return c.json({ message: "Unauthorized" }, 401)
       }
 
@@ -331,13 +336,14 @@ const roomsController = new Hono()
     async (c) => {
       const { id } = c.req.valid("param")
       const user = c.get("user")
+      const isAdmin = c.get("isAdmin")
 
       const question = await prisma.question.findUniqueOrThrow({
         where: { id },
         include: { room: { select: { userId: true } } }
       })
 
-      if (user?.id !== question.room.userId) {
+      if (user?.id !== question.room.userId && !isAdmin) {
         return c.json({ message: "Unauthorized" }, 401)
       }
 

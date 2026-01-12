@@ -58,7 +58,7 @@ export function MyRooms() {
           </EmptyHeader>
           <EmptyContent>
             <Button asChild>
-              <Link href="/dashboard/room/create">Criar Sala</Link>
+              <Link href="/dashboard/create-room">Criar Sala</Link>
             </Button>
           </EmptyContent>
         </Empty>

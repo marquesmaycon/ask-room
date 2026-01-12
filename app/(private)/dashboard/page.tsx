@@ -18,7 +18,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <h1 className="font-sans text-3xl font-bold">Minhas salas</h1>
           <Button asChild>
-            <Link href="/dashboard/room/create">
+            <Link href="/dashboard/create-room">
               Nova Sala
               <Plus />
             </Link>
