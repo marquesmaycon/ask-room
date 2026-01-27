@@ -1,11 +1,13 @@
 import { queryOptions, useQuery } from "@tanstack/react-query"
-import type { InferRequestType } from "hono"
+import type { InferRequestType, InferResponseType } from "hono"
 
 import { client } from "@/lib/rpc"
 
 const getRoomRequest = client.api.rooms[":id"].$get
 
-type RequestType = InferRequestType<typeof getRoomRequest>
+type GetRoomRoute = typeof getRoomRequest
+type RequestType = InferRequestType<GetRoomRoute>
+export type ResponseType = InferResponseType<GetRoomRoute>
 
 export const roomQueryOptions = ({ param }: RequestType) =>
   queryOptions({
