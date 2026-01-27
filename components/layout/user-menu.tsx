@@ -37,9 +37,9 @@ export function UserMenu({ user }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar>
+        <Avatar className="rounded-md">
           <AvatarImage src={user.image || ""} />
-          <AvatarFallback className="border bg-white text-sm font-bold dark:bg-slate-900">
+          <AvatarFallback className="hover:bg-accent bg-background dark:bg-input/30 rounded-md border text-xs font-bold transition-colors">
             {extractInitials(user.name)}
           </AvatarFallback>
         </Avatar>

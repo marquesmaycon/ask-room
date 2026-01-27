@@ -7,6 +7,7 @@ import { signUp } from "../actions"
 import { signUpSchema } from "../schemas"
 
 export const SignUpForm = () => {
+
   const form = useAppForm({
     defaultValues: {
       name: "",
@@ -51,7 +52,7 @@ export const SignUpForm = () => {
           )}
         </form.AppField>
         <form.AppForm>
-          <form.SubmitButton label="Entrar" />
+          <form.SubmitButton label="Registrar" />
         </form.AppForm>
       </FieldGroup>
     </form>

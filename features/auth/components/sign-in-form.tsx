@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransition } from "react"
+import { toast } from "sonner"
 
 import { FieldGroup } from "@/components/ui/field"
 import { useAppForm } from "@/hooks/form"
@@ -9,8 +9,6 @@ import { signIn } from "../actions"
 import { signInSchema } from "../schemas"
 
 export const SignInForm = () => {
-  const [isPending, startTransition] = useTransition()
-
   const form = useAppForm({
     defaultValues: {
       email: "",
@@ -20,12 +18,17 @@ export const SignInForm = () => {
       onSubmit: signInSchema
     },
     onSubmit: async ({ value }) => {
-      startTransition(async () => {
+      try {
         await signIn(value)
-      })
-      // TO DO => quebrando quando senha da errada
+      } catch (error) {
+        if (String(error).includes("NEXT_REDIRECT")) return
+        toast.error("Erro ao fazer login", {
+          description: error instanceof Error ? error.message : String(error)
+        })
+      }
     }
   })
+
   return (
     <form
       onSubmit={(e) => {
@@ -44,7 +47,7 @@ export const SignInForm = () => {
           )}
         </form.AppField>
         <form.AppForm>
-          <form.SubmitButton label="Entrar" loading={isPending} />
+          <form.SubmitButton label="Entrar" />
         </form.AppForm>
       </FieldGroup>
     </form>
