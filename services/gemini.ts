@@ -52,6 +52,11 @@ export async function generateEmbbedings(text: string) {
   return response.embeddings[0].values
 }
 
+export async function callModels() {
+  const response = await gemini.models.list()
+  return response
+}
+
 const systemPrompt = `Você é um assistente educacional que responde perguntas baseado exclusivamente em conteúdos fornecidos.
 
 REGRAS IMPORTANTES:
@@ -61,7 +66,9 @@ REGRAS IMPORTANTES:
 4. Mantenha um tom educativo, profissional e acessível
 5. Organize a resposta em parágrafos claros quando necessário
 6. Se for citar o conteúdo, use: "Conforme mencionado no conteúdo da aula..."
-7. Seja objetivo e direto`
+7. Seja objetivo e direto
+8. Se a pergunta usar pronomes (Ele, Ela, Isso, Aquilo, Eles, Elas), identifique automaticamente quem ou o que esta sendo mencionada no conteúdo/contexto e responda baseado nela
+9. Quando encontrar um pronome isolado, procure pela última coisa ou pessoa mencionada no conteúdo e use essa como referência`
 
 export async function generateAnswer(question: string, transcriptions: string[]) {
   if (transcriptions.length === 0) {
