@@ -1,6 +1,6 @@
 "use client"
 
-import { BrainCircuit, MessageCircleQuestionMark } from "lucide-react"
+import { BrainCircuit, Loader2, MessageCircleQuestionMark } from "lucide-react"
 import { redirect, useParams } from "next/navigation"
 
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
@@ -42,27 +42,37 @@ export function RoomPage({ isAdmin }: RoomPageProps) {
       </div>
 
       <ul className="space-y-6">
-        {room?.questions.map(({ id, question, answer, pinned, user }) => (
-          <li key={id}>
-            <Item variant="outline" className={cn(pinned && "border-2 border-violet-500")}>
-              <ItemContent>
-                <ItemTitle className="text-base">{question}</ItemTitle>
-                <ItemContent className="pt-4">
-                  <div className="mb-2 flex items-center gap-2">
-                    <BrainCircuit className="shrink-0" />{" "}
-                    <p className="text-muted-foreground">
-                      {answer ||
-                        "Não foi possivel encontrar encontrar uma resposta para essa pergunta."}
-                    </p>
-                  </div>
-                  <small className="text-muted-foreground">
-                    autor da pergunta: <i>{user?.name || "anônimo"}</i>
-                  </small>
+        {room?.questions.map(({ id, question, answer, pinned, user }) => {
+          const temp = id.startsWith("temp-")
+          return (
+            <li key={id}>
+              <Item
+                variant="outline"
+                className={cn(
+                  pinned && "border-2 border-violet-500",
+                  temp && "animate-pulse border-dashed"
+                )}
+              >
+                <ItemContent>
+                  <ItemTitle className="text-base">{question}</ItemTitle>
+                  <ItemContent className="pt-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <BrainCircuit className="shrink-0" />{" "}
+                      <p className="text-muted-foreground flex items-center gap-2">
+                        {temp && <Loader2 className="inline-flex animate-spin" />}
+                        {answer ||
+                          "Não foi possivel encontrar encontrar uma resposta para essa pergunta."}
+                      </p>
+                    </div>
+                    <small className="text-muted-foreground">
+                      autor da pergunta: <i>{user?.name || "anônimo"}</i>
+                    </small>
+                  </ItemContent>
                 </ItemContent>
-              </ItemContent>
-            </Item>
-          </li>
-        ))}
+              </Item>
+            </li>
+          )
+        })}
         {room?.questions.length === 0 && (
           <Empty>
             <EmptyHeader>

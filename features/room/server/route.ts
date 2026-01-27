@@ -69,7 +69,7 @@ const roomsController = new Hono()
       include: {
         questions: {
           include: { user: { select: { name: true } } },
-          orderBy: [{ pinned: "desc" }, { createdAt: "asc" }]
+          orderBy: [{ pinned: "desc" }, { createdAt: "desc" }]
         },
         roomChunks: true,
         invites: true
